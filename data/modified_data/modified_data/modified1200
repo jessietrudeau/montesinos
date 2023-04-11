@@ -1,0 +1,26 @@
+import csv
+import pandas as pd
+import numpy as np
+import csv
+
+#
+path_1200 = '/Users/franciscasaldivar/montesinos/data/modified_data/modified_data/1200.tsv'
+
+# Load TSV data into a DataFrame
+t_1200 = pd.read_csv(path_1200, sep='\t')
+
+#import fuzzywuzzy packages
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
+#list of strings for matching
+people = ["MONTESINOS", "CROUSILLAT"]
+
+
+# Function to get the best match from the given list
+def get_best_match(query, choices):
+    best_match = process.extractOne(query, choices)
+    return best_match[0]
+
+# Apply fuzzy matching to match_list for each row in source_column
+t_1200['speaker_std'] = t_1200['speaker'].apply(lambda x: get_best_match(x, people))
