@@ -4,7 +4,13 @@ from fuzzywuzzy import process
 import requests
 import os
 
-people = ["MONTESINOS", "CROUSILLAT", "MELLADO"]
+people = ['MONTESINOS', 'KOURI', 'LUCCHETTI', 'FERROR', 'FUJIMORI', 'BERENSON', 'SENOR', 'GUZMAN', 
+          'PASCAL', 'URRELO', 'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 'MARCENARO', 'AMOIN', 'MEDELIUS', 
+          'RUIZ', 'SALGADO', 'JOY WAY', 'LOZADA', 'ESPICHAN', 'MELLADO', 'SIRURA', 'ANDRADE', 'CUCULIZA', 'DAVILA', 
+          'MONTES DE OCA', 'SERPA', 'CASTILLO', 'DELLEPIANE', 'BELTRAN', 'VALLE RIESTRA', 'SANTANDER', 'ARCE', 'MARCHELO', 'HERNANDEZ CANELO', 'HURTADO MILLER', 
+          'BOROBIO', 'BRINGAS', 'IVACHINE', 'SAUCHEDO SANCHEZ', 'HERMOZA RIOS', 'IBARCENA', 'DIANDERAS', 'BELLO', 'VILLANUEVA RUESTA', 'MONROE', 'VENERO', 'HUAMAN', 
+          'TAFUR', 'GAMARRA', 'VALENZUELA', 'MAHUAD', 'VERA', 'HILDEBRANT', 'IBERICO', 'CROUSILLAT'
+          ]
 
 # Directory containing the documents
 directory_path = "/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data"
@@ -29,3 +35,5 @@ for filename in os.listdir(directory_path):
         
         # Save the updated DataFrame back to the original file
         df.to_csv(file_path, sep='\t', index=False)
+        
+        
