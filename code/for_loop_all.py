@@ -4,8 +4,9 @@ from fuzzywuzzy import process
 import requests
 import os
 
+#list of speakers created from exceltonames sheet
 people = ['MONTESINOS', 'BACKGROUND', 'UNIDENTIFIED', 
-          'KOURI', 'LUCCHETTI', 'FERROR', 'FUJIMORI', 
+          'KOURI', 'LUCCHETTI', 'FERRERO', 'FUJIMORI', 
           'BERENSON', 'SENOR', 'GUZMAN', 'PASCAL', 'URRELO', 
           'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 'MARCENARO', 
           'AMOIN', 'MEDELIUS', 'RUIZ', 'SALGADO', 'JOY WAY', 'LOZADA', 'ESPICHAN', 
@@ -21,17 +22,17 @@ people = ['MONTESINOS', 'BACKGROUND', 'UNIDENTIFIED',
 # Directory containing the documents
 directory_path = "/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data"
 
-# Loop through all files in the directory
+# Loop through all files in the directory 
 for filename in os.listdir(directory_path):
-    # Check if the file is a text file (you can modify this condition to match your specific file format)
+    # Check if the file is a tsv file 
     if filename.endswith(".tsv"):
-        # Construct the full file path by appending the filename to the directory path
+        # Appending the filename to the directory path
         file_path = os.path.join(directory_path, filename)
         
-        # Read the TSV file into a DataFrame
+        # Read the TSV files into a DataFrame
         df = pd.read_csv(file_path, sep='\t')
         
-        # Define a function to get the best match using fuzzy matching
+        # Define a get_best_match to match names in speaker list to actual speakers
         def get_best_match(query, choices):
             best_match = process.extractOne(query, choices)
             return best_match[0]
