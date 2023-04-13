@@ -4,7 +4,7 @@ from fuzzywuzzy import process
 import requests
 import os
 
-people = ['MONTESINOS', 'BACKGROUND' 'UNIDENTIFIED', 
+people = ['MONTESINOS', 'BACKGROUND', 'UNIDENTIFIED', 
           'KOURI', 'LUCCHETTI', 'FERROR', 'FUJIMORI', 
           'BERENSON', 'SENOR', 'GUZMAN', 'PASCAL', 'URRELO', 
           'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 'MARCENARO', 
