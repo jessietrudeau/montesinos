@@ -43,4 +43,43 @@ for filename in os.listdir(directory_path):
         # Save the updated DataFrame back to the original file
         df.to_csv(file_path, sep='\t', index=False)
         
-        
+'''Changes unknown characters in the 919 transcript for "Delegacion de Israel" '''
+
+# Read 919 TSV file into a DataFrame
+df_919 = pd.read_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/919.tsv', sep='\t')
+
+# Function to change string if it contains a specific word
+def speaker_switch(column, word, replacement):
+    
+    return column.apply(lambda x: x.replace(word, replacement) if fuzz.partial_ratio(word, x) >= 80 else x) #ratio of 80% -- high similarity
+
+# Call the function to change the strings in 'speaker' column that contain just 'Señor' to delegacion Israel
+df_919['speaker'] = speaker_switch(df_919['speaker'], 'El señor\t\t.—', 'Delegacion Israel')
+
+'''Changes unknown characters in the 1300 and 978 series transcripts for Militar Desconocido '''
+
+# Function to change string if it contains a specific word
+def speaker_switch(column, unknown_list, replacement):
+
+    for unknown in unknown_list:
+        column = column.apply(lambda x: x.replace(unknown, replacement) if fuzz.partial_ratio(unknown, x) >= 80 else x)
+    return column
+#ratio of 80% ensures high similarity but not identical
+
+# Read the 1300 TSV file into a DataFrame
+military_1300 = pd.read_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/1300.tsv', sep='\t')
+
+# Read the 978 series file into a DataFrame
+military_978_series = pd.read_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/978_977_976_975_974.tsv', sep='\t')
+
+# Define the unknown words and "Unidentifed Military" as the replacement word
+unknown_list = ['El Oficial EP', 'El  Oficial.', 'El señor\t\t.—', 'El General FAP']
+replacement = 'Militar Desconocido'
+
+# Call the function to change the strings in 'speaker' column of the first DataFrame
+military_1300['speaker'] = speaker_switch(military_1300['speaker'], unknown_list, replacement)
+
+# Call the function to change the strings in 'speaker' column of the second DataFrame
+military_978_series['speaker'] = speaker_switch(military_978_series['speaker'], unknown_list, replacement)
+
+print(military_1300)   
