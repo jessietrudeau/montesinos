@@ -5,7 +5,7 @@ import requests
 import os
 
 #list of speakers created from exceltonames sheet
-people = ['MONTESINOS', 'DESCONOCIDO', 'KOURI', 'LUCCHETTI', 'FERRERO', 'FUJIMORI', 'BERENSON', 
+people = ['MONTESINOS', 'DESCONOCIDO', 'BACKGROUND', 'KOURI', 'LUCCHETTI', 'FERRERO', 'FUJIMORI', 'BERENSON', 
           'SENOR', 'GUZMAN', 'PASCAL', 'URRELO', 'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 
           'MARCENARO', 'AMOIN', 'MEDELIUS', 'RUIZ', 'SALGADO', 'JOY WAY', 'LOZADA', 'ESPICHAN', 
           'MELLADO', 'SIRURA', 'ANDRADE', 'CUCULIZA', 'DAVILA', 'MONTES DE OCA', 'SERPA', 'CASTILLO', 
