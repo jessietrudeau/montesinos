@@ -5,15 +5,18 @@ from fuzzywuzzy import process
 '''Changes unknown characters in the 919 transcript for "Delegacion de Israel" '''
 
 # Read 919 TSV file into a DataFrame
-df_919 = pd.read_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/919.tsv', sep='\t')
+file_path = '/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/919.tsv'
+df_919 = pd.read_csv(file_path, sep='\t')
 
 # Function to change string if it contains a specific word
 def speaker_switch(column, word, replacement):
-    
     return column.apply(lambda x: x.replace(word, replacement) if fuzz.partial_ratio(word, x) >= 80 else x) #ratio of 80% -- high similarity
 
-# Call the function to change the strings in 'speaker' column that contain just 'Señor' to delegacion Israel
+# Call the function to change the strings in 'speaker' column that contain just 'Señor' to 'Delegacion Israel'
 df_919['speaker'] = speaker_switch(df_919['speaker'], 'El señor\t\t.—', 'Delegacion Israel')
+
+# Save the updated dataframe back to the original file
+df_919.to_csv(file_path, sep='\t', index=False)
 
 # Print the updated dataframe
 print(df_919)

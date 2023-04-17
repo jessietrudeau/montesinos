@@ -81,5 +81,3 @@ military_1300['speaker'] = speaker_switch(military_1300['speaker'], unknown_list
 
 # Call the function to change the strings in 'speaker' column of the second DataFrame
 military_978_series['speaker'] = speaker_switch(military_978_series['speaker'], unknown_list, replacement)
-
-print(military_1300)   

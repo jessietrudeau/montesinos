@@ -26,3 +26,7 @@ military_1300['speaker'] = speaker_switch(military_1300['speaker'], unknown_list
 
 # Call the function to change the strings in 'speaker' column of the second DataFrame
 military_978_series['speaker'] = speaker_switch(military_978_series['speaker'], unknown_list, replacement)
+
+# Save the updated dataframes back to the original files
+military_1300.to_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/1300.tsv', sep='\t', index=False)
+military_978_series.to_csv('/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/data/modified_data/modified_data/978_977_976_975_974.tsv', sep='\t', index=False)
