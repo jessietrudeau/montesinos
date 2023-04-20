@@ -34,13 +34,15 @@ for filename in os.listdir(directory_path):
             best_match = process.extractOne(query, choices)
             return best_match[0]
 
-        # Apply fuzzy matching to 'speaker' column for each row
+        # Apply fuzzy matching to 'speaker' column for each row in every transcript, creating new column that outputs name code
         df['speaker_std'] = df['speaker'].apply(lambda x: get_best_match(x, people))
 
-        # Replace word in 'column_name' column if it is included in 'words_to_replace' list
+        # Replaces all unknown "señor" in speaker column with Desconocido
         words_to_replace = ['El señor\t\t.—']
         df['speaker'] = df['speaker'].apply(lambda x: x.replace(x, 'Desconocido') if x in words_to_replace else x)
 
         # Save the updated DataFrame back to the original file
         df.to_csv(file_path, sep='\t', index=False)
+        
+        #
     
