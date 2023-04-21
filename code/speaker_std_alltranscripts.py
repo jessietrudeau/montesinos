@@ -4,9 +4,11 @@ from fuzzywuzzy import process
 import requests
 import os
 
+'''Iterates every transcript in the file to create a speaker_std column that matches name of speaker to people in list below'''
+
 #list of speakers created from exceltonames sheet
 people = ['MONTESINOS', 'DESCONOCIDO', 'BACKGROUND', 'KOURI', 'LUCCHETTI', 'FERRERO', 'FUJIMORI', 'BERENSON', 
-          'SENOR', 'GUZMAN', 'PASCAL', 'URRELO', 'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 
+          'GUZMAN', 'PASCAL', 'URRELO', 'BLANCO', 'TRELLES', 'QUISPE', 'PANDO', 'VELIT', 
           'MARCENARO', 'AMOIN', 'MEDELIUS', 'RUIZ', 'SALGADO', 'JOY WAY', 'LOZADA', 'ESPICHAN', 
           'MELLADO', 'SIRURA', 'ANDRADE', 'CUCULIZA', 'DAVILA', 'MONTES DE OCA', 'SERPA', 'CASTILLO', 
           'DELLEPIANE', 'BELTRAN', 'VALLE RIESTRA', 'SANTANDER', 'ARCE', 'MARCHELO', 'HERNANDEZ CANELO', 
@@ -38,11 +40,15 @@ for filename in os.listdir(directory_path):
         df['speaker_std'] = df['speaker'].apply(lambda x: get_best_match(x, people))
 
         # Replaces all unknown "señor" in speaker column with Desconocido
-        words_to_replace = ['El señor\t\t.—']
+        words_to_replace = ['El señor\t\t.—', 'SENOR']
         df['speaker'] = df['speaker'].apply(lambda x: x.replace(x, 'Desconocido') if x in words_to_replace else x)
 
         # Save the updated DataFrame back to the original file
         df.to_csv(file_path, sep='\t', index=False)
         
-        #
+        
+        
+
+        
+        
     
