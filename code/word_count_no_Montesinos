@@ -20,7 +20,7 @@ for filename in os.listdir(directory_path):
     for index, row in df.iterrows():
         speaker = row['speaker_std']
         speech = row['speech']
-        if speaker != 'BACKGROUND':
+        if speaker not in ['MONTESINOS', 'BACKGROUND']:
             word_count = len(str(speech).split())
             if speaker in word_count_by_speaker:
                 word_count_by_speaker[speaker].append(word_count)
@@ -46,5 +46,5 @@ word_count_results = pd.DataFrame({
 # Sort the results in descending order by total word count
 word_count_results = word_count_results.sort_values('Total Word Count', ascending=False)
 
-# Save the results to a a new file
-word_count_results.to_csv('word_count_results_all.tsv', sep='\t', index=False)
+# Save the results to a new file
+word_count_results.to_csv('word_count_results_noMONTESINOS.tsv', sep='\t', index=False)

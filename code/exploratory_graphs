@@ -2,6 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
+#INCLUDING MONTESINOS
 #reading in table with the results
 file_path = '/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/word_count_results_all.tsv'
 word_count_table = pd.read_csv(file_path, sep='\t')
@@ -20,7 +21,7 @@ plt.show()
 #filtering table to only show speakers that represent more than 2% of speaking time
 word_count_table_filtered = word_count_table[word_count_table['Proportion of Word Count'] > 2]
 
-# Creating pie chart of filtered table with speakers with proportion of speaking time greater than 1%
+# Creating pie chart of filtered table with speakers with proportion of speaking time greater than 2%
 sns.set_style("whitegrid")
 colors = sns.color_palette("pastel")
 plt.figure(figsize=(10,10))
@@ -56,3 +57,29 @@ ax = plt.gca()
 ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
 plt.show()
 
+#EXCLUDING
+#reading in table without Montesinos
+file_path = '/Users/franciscasaldivar/Desktop/Montesinos_GitHub/montesinos/word_count_results_noMONTESINOS_sorted.tsv'
+word_count_table_no_Montesinos = pd.read_csv(file_path, sep='\t')
+
+# remove percent symbol from the 'Proportion of Word Count' column to be able to convert to float and not string
+word_count_table_no_Montesinos['Proportion of Word Count'] = word_count_table_no_Montesinos['Proportion of Word Count'].str.replace('%', '').astype(float)
+
+# Creating a piechart that visualizes proportion of speaking for all people
+sns.set_style("whitegrid")
+colors = sns.color_palette("pastel") #setting color
+plt.figure(figsize=(10,10)) #setting size
+plt.pie(word_count_table_no_Montesinos['Proportion of Word Count'], labels=word_count_table_no_Montesinos['Speaker'], colors=colors, autopct='%1.0f%%', pctdistance=0.8)
+plt.title('Proportion of Word Count by Speaker', fontsize=16)
+plt.show() 
+
+#filtering table without Montesinos to only show speakers that represent more than 2% of speaking time
+table_no_Montesinos_filtered = word_count_table_no_Montesinos[word_count_table_no_Montesinos['Proportion of Word Count'] > 2]
+
+# Creating pie chart of filtered table with speakers with proportion of speaking time greater than 2%
+sns.set_style("whitegrid")
+colors = sns.color_palette("pastel")
+plt.figure(figsize=(10,10))
+plt.pie(table_no_Montesinos_filtered['Proportion of Word Count'], labels=table_no_Montesinos_filtered['Speaker'], colors=colors, autopct='%1.0f%%', pctdistance=0.8)
+plt.title('Proportion of Word Count by Speaker (above 2%)', fontsize=16)
+plt.show()
