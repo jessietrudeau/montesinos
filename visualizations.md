@@ -35,8 +35,7 @@ ggplot(word_data, aes(x = reorder(Speaker, Proportion), y = Proportion)) +
 ```
 
 # Speaker Frequency
-```{r}
-#Speaker Frequency 
+```{r} 
 
 # Load necessary libraries
 library(ggplot2)
@@ -65,13 +64,11 @@ ggplot(df_filtered, aes(x = reorder(Speaker, -Frequency), y = Frequency)) +
 # Word Count Per Topic
 ```{r}
 
-# Install necessary packages
+# Install & Library necessary packages
 install.packages("tidyr")
 install.packages("tidyverse")
 install.packages("dplyr")
 install.packages("ggplot2")
-
-# Load required libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
