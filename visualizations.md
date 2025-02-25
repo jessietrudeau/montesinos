@@ -29,8 +29,7 @@ ggplot(word_data, aes(x = reorder(Speaker, Proportion), y = Proportion)) +
        x = "Speaker",
        y = "Proportion of Words Spoken (%)") +
   theme_minimal()+
-  theme(axis.text.y = element_text(size = 5))+
-  scale_y_continuous(limits = c(0, max(top_speakers$Proportion) * 1.2))
+  theme(axis.text.y = element_text(size = 5))
 
 ```
 
