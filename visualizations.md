@@ -113,6 +113,7 @@ ggplot(df_long, aes(x = Topic, y = Word_Count, fill = Word_Count_Type)) +
 
 ```
 
+# Histograms
 
 ## Average Length of Conversations
 ```{r}
