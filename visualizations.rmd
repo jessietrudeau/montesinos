@@ -10,26 +10,27 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
-file_path<-"C:/Users/agsotopl/OneDrive - Syracuse University/Documents/Montesinos tests/count_results_all.tsv"
+# Read in File
+file_path <- "C:/Users/agsotopl/OneDrive - Syracuse University/Documents/Montesinos tests/count_results_all.tsv"
 word_data <- read_tsv(file_path)
 
-# View the first few rows
-head(word_data)
-
-# Verify column names for further steps
-colnames(word_data)
-
-# Exclude 'desconocido' if it exists
+# Exclude 'DESCONOCIDO'
 word_data <- word_data %>% filter(Speaker != "DESCONOCIDO")
 
-# Compute proportions
-#word_data <- word_data %>%
- # mutate(Proportion = `Total Word Count` / sum(`Total Word Count`) * 100)
-
-# Compute proportions manually
+# Compute proportions (Exluding the use of existing Propoetion Column)
 word_data <- word_data %>%
-  select(Speaker, `Total Word Count`) %>%  # Drop the "Proportion of Word Count" column
-  mutate(Proportion = `Total Word Count` / sum(`Total Word Count`) * 100)
+  mutate(Proportion = (`Total Word Count` / sum(`Total Word Count`)) * 100)
+
+# Plot bar chart
+ggplot(word_data, aes(x = reorder(Speaker, Proportion), y = Proportion)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +  # Flip coordinates for better readability
+  labs(title = "Word Count Proportion by Speaker",
+       x = "Speaker",
+       y = "Proportion of Words Spoken (%)") +
+  theme_minimal()+
+  theme(axis.text.y = element_text(size = 5))+
+  scale_y_continuous(limits = c(0, max(top_speakers$Proportion) * 1.2))
 
 ```
 
