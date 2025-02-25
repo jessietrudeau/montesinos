@@ -114,6 +114,79 @@ ggplot(df_long, aes(x = Topic, y = Word_Count, fill = Word_Count_Type)) +
 ```
 
 
+## Average Length of Conversations
+```{r}
+
+setwd("C:/Users/agsotopl/OneDrive - Syracuse University/Documents/GitHub/montesinos/montesinos/data/modified_data/finalized_data")
+list.files()
+
+# Load necessary libraries
+install.packages("readr")
+install.packages("stringr")
+library(readr)  # For reading CSV & TSV files
+library(stringr)  # For text processing
+
+# Get a list of CSV and TSV files
+csv_files <- list.files(pattern = "\\.csv$")
+tsv_files <- list.files(pattern = "\\.tsv$")
+
+# Combine file lists
+all_files <- c(csv_files, tsv_files)
+
+# Initialize total word count and file count
+total_word_count <- 0
+file_count <- 0
+
+# Function to count words in the 'speech' column safely
+count_words <- function(text) {
+  if (is.null(text) || all(is.na(text))) {
+    return(0)  # Return 0 if text is NULL or all NA
+  }
+  text <- na.omit(text)  # Remove NA values
+  sum(str_count(text, "\\S+"))  # Count words in non-NA text
+}
+
+# Loop through each file
+for (file in all_files) {
+  # Read the file and handle errors
+  df <- tryCatch({
+    if (grepl("\\.csv$", file)) {
+      read_csv(file, show_col_types = FALSE)  # Read CSV
+    } else if (grepl("\\.tsv$", file)) {
+      read_tsv(file, show_col_types = FALSE)  # Read TSV
+    }
+  }, error = function(e) {
+    cat("Error reading file:", file, "\n")
+    return(NULL)
+  })
+  
+  # Check if file was successfully read and 'speech' column exists
+  if (!is.null(df) && "speech" %in% colnames(df)) {
+    # Calculate total words in 'speech' column
+    file_word_count <- count_words(df$speech)
+    
+    # Debugging: Print word count for each file
+    cat("File:", file, "- Word Count:", file_word_count, "\n")
+    
+    # Update total word count and file count
+    total_word_count <- total_word_count + file_word_count
+    file_count <- file_count + 1
+  } else {
+    cat("Skipping file (missing 'speech' column):", file, "\n")
+  }
+}
+
+# Calculate the average word count per file
+average_word_count <- ifelse(file_count > 0, total_word_count / file_count, NA)
+
+# Print result
+cat("Total Word Count:", total_word_count, "\n")
+cat("Number of Files Processed:", file_count, "\n")
+cat("Average Word Count per File:", average_word_count, "\n")
+
+```
+
+Average Conversation Length by Topic
 ```{r}
 
 
@@ -121,7 +194,7 @@ ggplot(df_long, aes(x = Topic, y = Word_Count, fill = Word_Count_Type)) +
 
 ```
 
-
+Balance of Conversations
 ```{r}
 
 
@@ -129,10 +202,3 @@ ggplot(df_long, aes(x = Topic, y = Word_Count, fill = Word_Count_Type)) +
 
 ```
 
-
-```{r}
-
-
-
-
-```
