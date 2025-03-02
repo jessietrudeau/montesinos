@@ -414,8 +414,107 @@ print(paste("Total Word Count Across All Transcripts:", sum(word_count_df$Word_C
 
 ```
 
-# Balance of Conversations
+## Bar Plot
 ```{r}
+
+library(readr)   # For reading CSV & TSV files
+library(stringr) # For text processing
+library(dplyr)   # For data manipulation
+library(ggplot2) # For visualization
+
+# Get a list of CSV and TSV files in the directory
+csv_files <- list.files(pattern = "\\.csv$")
+tsv_files <- list.files(pattern = "\\.tsv$")
+
+# Combine file lists
+all_files <- c(csv_files, tsv_files)
+
+# Function to count words in the 'speech' column safely
+count_words <- function(text) {
+  if (is.null(text) || all(is.na(text))) {
+    return(0)  # Return 0 if text is NULL or all NA
+  }
+  text <- na.omit(text)  # Remove NA values
+  sum(str_count(text, "\\S+"))  # Count words in non-NA text
+}
+
+# Initialize an empty list to store data frames
+all_speaker_data <- list()
+
+# Loop through each file and accumulate results
+for (file in all_files) {
+  df <- tryCatch({
+    if (grepl("\\.csv$", file)) {
+      read_csv(file, show_col_types = FALSE)
+    } else if (grepl("\\.tsv$", file)) {
+      read_tsv(file, show_col_types = FALSE)
+    }
+  }, error = function(e) {
+    cat("Error reading file:", file, "\n")
+    return(NULL)
+  })
+  
+  # Proceed only if the file was successfully read and contains required columns
+  if (!is.null(df) && all(c("speech", "speaker_std") %in% colnames(df))) {
+    
+    # Process data to count words per speaker
+    df <- df %>%
+      filter(!is.na(speech) & !is.na(speaker_std)) %>%
+      group_by(speaker_std) %>%
+      summarise(
+        Total_Words = sum(count_words(speech)),
+        Appearances = n(),
+        .groups = "drop"
+      )
+    
+    # Store the processed data in a list
+    all_speaker_data[[file]] <- df
+  } else {
+    cat("Skipping file (missing required columns):", file, "\n")
+  }
+}
+
+# Combine all accumulated data into a single data frame
+if (length(all_speaker_data) > 0) {
+  speaker_word_counts <- bind_rows(all_speaker_data) %>%
+    group_by(Speaker = speaker_std) %>%
+    summarise(
+      Total_Words = sum(Total_Words),
+      Appearances = sum(Appearances),
+      .groups = "drop"
+    ) %>%
+    mutate(Average_Words_Per_Appearance = Total_Words / Appearances)
+} else {
+  speaker_word_counts <- data.frame()
+  cat("No valid data found in any files.\n")
+}
+
+# Print summary
+cat("Total Unique Speakers:", nrow(speaker_word_counts), "\n")
+
+# Display the final aggregated results
+print(speaker_word_counts)
+
+# Sort data by Average Words Per Appearance (Descending)
+speaker_word_counts <- speaker_word_counts %>%
+  arrange(desc(Average_Words_Per_Appearance))
+
+# Create the bar plot with all speakers on the x-axis
+ggplot(speaker_word_counts, aes(x = reorder(Speaker, -Average_Words_Per_Appearance), y = Average_Words_Per_Appearance)) +
+  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.8) +
+  labs(title = "Words Per Appearance by Speaker",
+       x = "Speaker",
+       y = "Average Words Per Appearance") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 8),  # Rotate x-axis labels for readability
+    axis.text.y = element_text(size = 10)  # Keep y-axis labels readable
+  )
+
+
+
+
+
 
 
 
