@@ -304,10 +304,79 @@ ggplot(word_counts, aes(x = Word_Count)) +
 
 ```
 
-# Average Conversation Length by Topic
+## Average Conversation Length by Topic
 ```{r}
+# Load required libraries
+library(dplyr)
+library(readr)
+library(stringr)
 
+# Define file paths
+inventory_file <- "C:/Users/agsotopl/Downloads/Copy of inventory - Transcript inventory.tsv"
+directory_path <- "C:/Users/agsotopl/Downloads/montesinos/data/modified_data/finalized_data"
 
+# Read the inventory data
+inventory_data <- read_tsv(inventory_file, col_types = cols())
+
+# List of topic columns
+topic_columns <- c("topic_referendum", "topic_ecuador", "topic_lucchetti_factory", "topic_municipal98", 
+                   "topic_reelection", "topic_miraflores", "topic_canal4", "topic_media", "topic_promotions", 
+                   "topic_ivcher", "topic_foreign", "topic_wiese", "topic_public_officials", "topic_safety", "topic_state_capture")
+
+# Initialize word count storage
+topic_word_count <- setNames(rep(0, length(topic_columns)), topic_columns)
+
+# Function to count words in a transcript file
+count_words_in_transcript <- function(file_path) {
+  if (!file.exists(file_path)) return(0)
+  
+  # Read the file
+  transcript_data <- read_tsv(file_path, col_types = cols(), na = c("", "NA"))
+  
+  # Check if the necessary columns exist
+  if (!all(c("speaker_std", "speech") %in% colnames(transcript_data))) return(0)
+  
+  # Filter out background speakers
+  valid_speeches <- transcript_data %>%
+    filter(!is.na(speech), speaker_std != "BACKGROUND") %>%
+    pull(speech)
+  
+  # Calculate total word count
+  total_words <- sum(str_count(valid_speeches, "\\S+"))
+  return(total_words)
+}
+
+# Iterate over transcript files and compute word counts
+for (i in 1:nrow(inventory_data)) {
+  transcript_id <- inventory_data$n[i]
+  
+  # Construct file path (assuming files are named as "n.tsv")
+  file_path <- file.path(directory_path, paste0(transcript_id, ".tsv"))
+  
+  # Compute word count for the transcript
+  transcript_word_count <- count_words_in_transcript(file_path)
+  
+  # Assign word count to relevant topics
+  for (topic in topic_columns) {
+    if (!is.na(inventory_data[[topic]][i]) && inventory_data[[topic]][i] == "x") {
+      topic_word_count[topic] <- topic_word_count[topic] + transcript_word_count
+    }
+  }
+}
+
+# Convert results to a data frame
+word_count_df <- data.frame(
+  Topic = names(topic_word_count),
+  Word_Count = unlist(topic_word_count),
+  stringsAsFactors = FALSE
+)
+
+# Save results to CSV
+output_file <- "word_count_by_topic.csv"
+write_csv(word_count_df, output_file)
+
+# Print summary
+print(word_count_df)
 
 
 ```
