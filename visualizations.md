@@ -536,6 +536,56 @@ ggplot(speaker_word_counts, aes(x = reorder(Speaker, -Average_Words_Per_Appearan
 ```{r}
 
 
+# Load required packages
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(vistime)
+library(lubridate)
+library(stringr)  # For counting speakers
+
+# Read the TSV file
+file_path <- "C:/Users/agsotopl/Downloads/Copy of inventory - Transcript inventory.tsv"
+data <- read_tsv(file_path)
+
+# Convert 'date' column to Date format
+data <- data %>%
+  mutate(date = mdy(date)) %>%
+  filter(!is.na(date))
+
+# Count number of speakers
+data <- data %>%
+  mutate(num_speakers = ifelse(is.na(speakers), 0, str_count(speakers, ",") + 1))
+
+# Select topic columns and reshape into long format
+topic_columns <- names(data)[grepl("^topic_", names(data))]
+
+long_data <- data %>%
+  select(n, date, speakers, num_speakers, all_of(topic_columns)) %>%
+  pivot_longer(cols = all_of(topic_columns), names_to = "topic", values_to = "present") %>%
+  filter(!is.na(present)) %>%
+  mutate(topic = gsub("topic_", "", topic))  # Remove "topic_" prefix for clarity
+
+# Define a custom gradient with multiple breakpoints
+ggplot(long_data, aes(x = date, y = topic, color = num_speakers)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_gradientn(colors = c("blue", "skyblue", "yellow", "lightgreen", "seagreen"),
+                        values = scales::rescale(c(min(long_data$num_speakers, na.rm = TRUE), 
+                                                   quantile(long_data$num_speakers, 0.25, na.rm = TRUE), 
+                                                   median(long_data$num_speakers, na.rm = TRUE), 
+                                                   quantile(long_data$num_speakers, 0.75, na.rm = TRUE), 
+                                                   max(long_data$num_speakers, na.rm = TRUE)))) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y") +
+  labs(title = "Timeline of Conversations by Topic",
+       subtitle = "Based on transcript inventory",
+       x = "Date",
+       y = "Topic",
+       color = "Number of Speakers") +
+  theme_minimal()
+
+
+
 
 
 ```
