@@ -306,10 +306,12 @@ ggplot(word_counts, aes(x = Word_Count)) +
 
 ## Average Conversation Length by Topic
 ```{r}
+
 # Load required libraries
 library(dplyr)
 library(readr)
 library(stringr)
+library(ggplot2)
 
 # Define file paths
 inventory_file <- "C:/Users/agsotopl/Downloads/Copy of inventory - Transcript inventory.tsv"
@@ -326,22 +328,22 @@ topic_columns <- c("topic_referendum", "topic_ecuador", "topic_lucchetti_factory
 # Initialize word count storage
 topic_word_count <- setNames(rep(0, length(topic_columns)), topic_columns)
 
-# Function to count words in a transcript file
+# Function to count words in a transcript file (from the 'speech' column)
 count_words_in_transcript <- function(file_path) {
   if (!file.exists(file_path)) return(0)
   
-  # Read the file
+  # Read the transcript file
   transcript_data <- read_tsv(file_path, col_types = cols(), na = c("", "NA"))
   
-  # Check if the necessary columns exist
-  if (!all(c("speaker_std", "speech") %in% colnames(transcript_data))) return(0)
+  # Check if the 'speech' column exists
+  if (!"speech" %in% colnames(transcript_data)) return(0)
   
-  # Filter out background speakers
+  # Extract valid speeches (ignore missing values)
   valid_speeches <- transcript_data %>%
-    filter(!is.na(speech), speaker_std != "BACKGROUND") %>%
+    filter(!is.na(speech)) %>%
     pull(speech)
   
-  # Calculate total word count
+  # Calculate total word count from the 'speech' column
   total_words <- sum(str_count(valid_speeches, "\\S+"))
   return(total_words)
 }
@@ -377,6 +379,37 @@ write_csv(word_count_df, output_file)
 
 # Print summary
 print(word_count_df)
+
+# Histogram of Word Count Per Topic
+ggplot(word_count_df, aes(x = reorder(Topic, -Word_Count), y = Word_Count)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Word Count Per Topic", x = "Topic", y = "Word Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Calculate the average word count across all transcripts
+average_word_count_all <- sum(word_count_df$Word_Count) / nrow(inventory_data)
+
+# Print average word count
+print(paste("Average Word Count Across All Transcripts:", round(average_word_count_all, 2)))
+
+# Calculate the average word count across all topics
+average_word_count_topics <- sum(word_count_df$Word_Count) / length(topic_columns)
+
+# Print average word count per topic
+print(paste("Average Word Count Across All Topics:", round(average_word_count_topics, 2)))
+
+ggplot(word_count_df, aes(x = reorder(Topic, -Word_Count), y = Word_Count)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_hline(yintercept = average_word_count_topics, linetype = "dashed", color = "red", size = 1) +
+  labs(title = "Word Count Per Topic", x = "Topic", y = "Word Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  annotate("text", x = 1, y = average_word_count_all + 100, label = paste("Avg:", round(average_word_count_topics, 2)), color = "red", hjust = 0)
+
+print(paste("Total Word Count Across All Transcripts:", sum(word_count_df$Word_Count)))
+
+
 
 
 ```
