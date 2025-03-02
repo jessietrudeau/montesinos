@@ -591,4 +591,42 @@ ggplot(long_data, aes(x = date, y = topic, color = num_speakers)) +
 ```
 
 
+# Summary Table
+```{r}
+
+# Create a summary table counting occurrences of each unique value in "Type_Merged"
+type_summary <- df %>%
+  group_by(Type_Merged) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count))
+
+# Print summary table
+print(type_summary)
+
+
+```
+
+
+#
+```{r}
+
+
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+
+```
+
+
 
