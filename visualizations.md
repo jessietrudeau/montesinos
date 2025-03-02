@@ -414,8 +414,18 @@ print(paste("Total Word Count Across All Transcripts:", sum(word_count_df$Word_C
 
 ```
 
-## Bar Plot
+# Bar Plot
 ```{r}
+
+# Set working directory
+setwd("C:/Users/agsotopl/Downloads/montesinos/data/modified_data/finalized_data")
+
+# Load necessary libraries
+install.packages("readr")
+install.packages("stringr")
+install.packages("dplyr")
+install.packages("ggplot2")
+
 
 library(readr)   # For reading CSV & TSV files
 library(stringr) # For text processing
