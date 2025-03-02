@@ -188,49 +188,9 @@ cat("Total Word Count:", total_word_count, "\n")
 cat("Number of Files Processed:", file_count, "\n")
 cat("Average Word Count per File:", average_word_count, "\n")
 
-
-
-
-
-# Initialize a data frame to store file names and word counts
-word_counts <- data.frame(File = character(), Word_Count = numeric(), stringsAsFactors = FALSE)
-
-# Loop through each file
-for (file in all_files) {
-  df <- tryCatch({
-    if (grepl("\\.csv$", file)) {
-      read_csv(file, show_col_types = FALSE)
-    } else if (grepl("\\.tsv$", file)) {
-      read_tsv(file, show_col_types = FALSE)
-    }
-  }, error = function(e) {
-    cat("Error reading file:", file, "\n")
-    return(NULL)
-  })
-  
-  if (!is.null(df) && "speech" %in% colnames(df)) {
-    file_word_count <- count_words(df$speech)
-    
-    # Store results in the data frame
-    word_counts <- rbind(word_counts, data.frame(File = file, Word_Count = file_word_count))
-  }
-}
-
-# Calculate average word count
-average_word_count <- mean(word_counts$Word_Count, na.rm = TRUE)
-
-# Create histogram
-ggplot(word_counts, aes(x = Word_Count)) +
-  geom_histogram(binwidth = 100, fill = "blue", alpha = 0.7, color = "black") +
-  geom_vline(aes(xintercept = average_word_count), color = "red", linetype = "dashed", size = 1) +
-  labs(title = "Distribution of Word Counts per File",
-       x = "Word Count",
-       y = "Frequency") +
-  theme_minimal()
-
 ```
 
-Average Conversation Length by Topic
+# Average Conversation Length by Topic
 ```{r}
 
 
@@ -238,11 +198,22 @@ Average Conversation Length by Topic
 
 ```
 
-Balance of Conversations
+# Balance of Conversations
 ```{r}
 
 
 
 
 ```
+
+
+# Average Conversation Length by Topic
+```{r}
+
+
+
+
+```
+
+
 
