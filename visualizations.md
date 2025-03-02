@@ -185,9 +185,26 @@ cat("Total Word Count:", total_word_count, "\n")
 cat("Number of Files Processed:", file_count, "\n")
 cat("Average Word Count per File:", average_word_count, "\n")
 
+
+
+
+# Create histogram
+ggplot(word_counts, aes(x = Word_Count)) +
+  geom_histogram(binwidth = 100, fill = "blue", alpha = 0.7, color = "black") +
+  geom_vline(aes(xintercept = average_word_count), color = "red", linetype = "solid", size = 1) +
+  labs(title = "Distribution of Word Counts per File",
+       x = "Word Count",
+       y = "Frequency") +
+  theme_minimal()
+
+
+
+
+
+
 ```
 
-Average Conversation Length by Topic
+# Average Conversation Length by Topic
 ```{r}
 
 
@@ -195,11 +212,22 @@ Average Conversation Length by Topic
 
 ```
 
-Balance of Conversations
+# Balance of Conversations
 ```{r}
 
 
 
 
 ```
+
+
+# Average Conversation Length by Topic
+```{r}
+
+
+
+
+```
+
+
 
