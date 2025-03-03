@@ -607,9 +607,89 @@ print(type_summary)
 ```
 
 
-#
+# Histograms (Vists by type & Inner Circle V Outer Circle)
 ```{r}
 
+# Load required libraries
+install.packages("tidyverse")
+library(tidyverse)
+
+# Set the directory where transcript files are stored
+transcript_dir <- "C:/Users/agsotopl/Downloads/montesinos/data/modified_data/finalized_data"
+
+# Get list of all CSV and TSV files
+transcript_files <- list.files(path = transcript_dir, pattern = "\\.(csv|tsv)$", full.names = TRUE)
+
+# Function to detect delimiter and read file correctly
+read_transcript_file <- function(file_path) {
+  if (grepl("\\.csv$", file_path)) {
+    return(read_csv(file_path, col_types = cols()))
+  } else if (grepl("\\.tsv$", file_path)) {
+    return(read_tsv(file_path, col_types = cols()))
+  } else {
+    return(NULL)  # In case of an unexpected format
+  }
+}
+
+# Initialize an empty dataframe to store speaker visits
+speaker_visits <- tibble(speaker_std = character(), file_name = character())
+
+# Loop through each transcript file and extract unique speaker_std values
+for (file in transcript_files) {
+  # Read file using the appropriate function
+  df <- read_transcript_file(file)
+  
+  # Check if 'speaker_std' column exists in the file
+  if (!is.null(df) && "speaker_std" %in% colnames(df)) {
+    # Store unique speakers per file
+    unique_speakers <- df %>%
+      select(speaker_std) %>%
+      distinct() %>%
+      mutate(file_name = basename(file))
+    
+    # Append to the master visits dataframe
+    speaker_visits <- bind_rows(speaker_visits, unique_speakers)
+  }
+}
+
+# Count unique appearances per speaker (number of transcript files they appear in)
+speaker_counts <- speaker_visits %>%
+  group_by(speaker_std) %>%
+  summarize(visits = n(), .groups = "drop")
+
+# Load the master actors dataset
+actors_file <- "C:/Users/agsotopl/Downloads/montesinos_cleaned.csv"
+actors_data <- read_csv(actors_file, col_types = cols())
+
+# Clean column names to match modifications
+colnames(actors_data) <- colnames(actors_data) %>% str_replace_all(" ", "_") %>% str_replace_all("'", "")
+
+# Merge visits data with actor classifications
+merged_data <- speaker_counts %>%
+  left_join(actors_data %>% select(speaker_std, Type_Merged), by = "speaker_std")
+
+# Count total visits by actor classification
+visit_summary <- merged_data %>%
+  group_by(Type_Merged) %>%
+  summarize(total_visits = sum(visits, na.rm = TRUE), unique_speakers = n(), .groups = "drop")
+
+# Display results
+print(visit_summary)
+
+# Optionally, save to CSV
+write_csv(visit_summary, "C:/Users/agsotopl/Downloads/montesinos/visit_summary_by_type.csv")
+
+# Load the summarized visit data
+visit_summary <- read_csv("C:/Users/agsotopl/Downloads/montesinos/visit_summary_by_type.csv", col_types = cols())
+
+# Create a bar plot to visualize the total visits for each type
+ggplot(visit_summary, aes(x = reorder(Type_Merged, -total_visits), y = total_visits, fill = Type_Merged)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +  # Bar plot with total_visits as height
+  labs(title = "Total Visits by Type", 
+       x = "Type of Individual", 
+       y = "Total Visits") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
 
 ```
 
