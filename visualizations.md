@@ -610,6 +610,7 @@ print(type_summary)
 # Histograms (Vists by type & Inner Circle V Outer Circle)
 ```{r}
 
+
 # Load required libraries
 install.packages("tidyverse")
 library(tidyverse)
@@ -690,6 +691,24 @@ ggplot(visit_summary, aes(x = reorder(Type_Merged, -total_visits), y = total_vis
        y = "Total Visits") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+# Create a new column categorizing Inner Circle vs. Outer Circle
+visit_summary <- visit_summary %>%
+  mutate(circle_group = ifelse(Type_Merged == "Inner Circle", "Inner Circle", "Outer Circle"))
+
+# Summarize total visits for each category
+circle_summary <- visit_summary %>%
+  group_by(circle_group) %>%
+  summarize(total_visits = sum(total_visits, na.rm = TRUE), .groups = "drop")
+
+# Create a bar plot to compare Inner Circle vs. Outer Circle
+ggplot(circle_summary, aes(x = circle_group, y = total_visits, fill = circle_group)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +  
+  labs(title = "Comparison of Visits: Inner Circle vs. Outer Circle", 
+       x = "Group", 
+       y = "Total Visits") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Inner Circle" = "red", "Outer Circle" = "blue"))  # Custom colors
 
 ```
 
