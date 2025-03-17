@@ -61,3 +61,84 @@ saveRDS(dfm_turns, "dfm_turns.rds")
 # Display summary
 summary(dfm_general)
 summary(dfm_turns)
+
+
+
+#STM
+
+# Install and load the required libraries
+install.packages("stm")
+library(stm)
+
+# Convert quanteda dfm to STM format
+dfm_stm <- convert(dfm_general, to = "stm")
+
+# Define the number of topics (e.g., 5 topics)
+num_topics <- 5
+
+# Fit the STM model
+stm_model <- stm(
+  documents = dfm_stm$documents,
+  vocab = dfm_stm$vocab,
+  K = num_topics,
+  prevalence = ~ speaker,  # Include metadata if available
+  max.em.its = 75,
+  data = dfm_stm$meta
+)
+
+# Inspect top words for each topic
+labelTopics(stm_model)
+
+# Plot topic proportions
+plot.STM(stm_model, type = "summary", labeltype = "frex")
+
+
+
+# Tidytext Analysis
+
+# Install and load libraries
+install.packages("tidytext")
+library(tidytext)
+
+# Convert speech data to tidy format
+tidy_text <- text_data %>%
+  unnest_tokens(word, speech)
+
+# Join with sentiment lexicon
+sentiment_scores <- tidy_text %>%
+  inner_join(get_sentiments("bing"), by = "word") %>%
+  count(word, sentiment, sort = TRUE)
+
+# Aggregate sentiment
+sentiment_summary <- sentiment_scores %>%
+  group_by(sentiment) %>%
+  summarize(total = sum(n))
+
+# Visualize sentiment distribution
+library(ggplot2)
+ggplot(sentiment_summary, aes(x = sentiment, y = total, fill = sentiment)) +
+  geom_col() +
+  theme_minimal()
+
+
+
+
+#Setnimentr Text Analysis
+
+# Install and load sentimentr
+install.packages("sentimentr")
+library(sentimentr)
+
+# Analyze sentiment at sentence level
+sentiment_results <- sentiment(text_data$speech)
+
+# View summary
+summary(sentiment_results)
+
+# Visualize sentiment trajectory
+plot(sentiment_results)
+
+
+
+
+
