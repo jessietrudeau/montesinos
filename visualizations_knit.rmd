@@ -43,6 +43,29 @@ ggplot(word_data, aes(x = reorder(Speaker, Proportion), y = Proportion)) +
   theme_minimal()+
   theme(axis.text.y = element_text(size = 5))
 
+
+# Filter out 'MONTESINOS' and 'DESCONOCIDO'
+filtered_data <- word_data %>%
+  filter(!(Speaker %in% c("MONTESINOS", "DESCONOCIDO")))
+
+# Recalculate proportions based on filtered total word counts
+filtered_data <- filtered_data %>%
+  mutate(Proportion = (`Total Word Count` / sum(`Total Word Count`)) * 100)
+
+# Select top 20 speakers by recalculated proportion
+top20_data <- filtered_data %>%
+  arrange(desc(Proportion)) %>%
+  slice_head(n = 20)
+
+# Plot bar chart
+ggplot(top20_data, aes(x = reorder(Speaker, Proportion), y = Proportion)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Top 20 Speakers by Recalculated Word Count Proportion (Excluding MONTESINOS & DESCONOCIDO)",
+       x = "Speaker",
+       y = "Proportion of Words Spoken (%)") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))
 ```
 
 # Speaker Frequency
@@ -66,6 +89,21 @@ ggplot(df_filtered, aes(x = reorder(Speaker, -Frequency), y = Frequency)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   theme_minimal() +
   labs(title = "Frequency of Speakers",
+       x = "Speaker",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+# Keep only the top 20 speakers based on frequency
+df_top20 <- df_filtered %>%
+  arrange(desc(Frequency)) %>%
+  slice_head(n = 20)
+
+# Plot top 20
+ggplot(df_top20, aes(x = reorder(Speaker, -Frequency), y = Frequency)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  theme_minimal() +
+  labs(title = "Top 20 Speakers by Frequency",
        x = "Speaker",
        y = "Frequency") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
