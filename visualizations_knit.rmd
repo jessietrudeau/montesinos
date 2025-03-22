@@ -538,6 +538,22 @@ ggplot(speaker_word_counts, aes(x = reorder(Speaker, -Average_Words_Per_Appearan
   )
 
 
+
+# Create the bar plot showing only the top 20 speakers by average words per appearance
+top20_speakers <- speaker_word_counts %>%
+  slice_max(Average_Words_Per_Appearance, n = 20)
+
+ggplot(top20_speakers, aes(x = reorder(Speaker, -Average_Words_Per_Appearance), y = Average_Words_Per_Appearance)) +
+  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.8) +
+  labs(title = "Top 20 Speakers by Average Words Per Appearance",
+       x = "Speaker",
+       y = "Average Words Per Appearance") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 8),  # Rotate x-axis labels for readability
+    axis.text.y = element_text(size = 10)  # Keep y-axis labels readable
+  )
+
 ```
 
 
