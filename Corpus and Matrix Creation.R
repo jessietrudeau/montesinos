@@ -74,7 +74,7 @@ library(stm)
 dfm_stm <- convert(dfm_general, to = "stm")
 
 # Define the number of topics (e.g., 5 topics)
-num_topics <- 5
+num_topics <- 0
 
 # Fit the STM model
 stm_model <- stm(
