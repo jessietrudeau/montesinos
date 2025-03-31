@@ -14,12 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # Install and load the required libraries
 install.packages("stm")
 install.packages(c("geometry", "Rtsne", "rsvd"))
+install.packages("reshape2")
+
 library(geometry)
 library(Rtsne)
 library(rsvd)
 library(stm)
 library(tidyverse)
 library(tidytext)
+library(reshape2)
 ```
 
 
@@ -37,7 +40,7 @@ num_topics_1 <- 5
 stm_model_1 <- stm(
   documents = dfm_stm$documents,
   vocab = dfm_stm$vocab,
-  K = num_topics,
+  K = num_topics_1,
   prevalence = ~ speaker,  # Include metadata if available
   max.em.its = 75,
   data = dfm_stm$meta
@@ -78,7 +81,7 @@ num_topics_2 <- 10
 stm_model_2 <- stm(
   documents = dfm_stm$documents,
   vocab = dfm_stm$vocab,
-  K = num_topics,
+  K = num_topics_2,
   prevalence = ~ speaker,  # Include metadata if available
   max.em.its = 75,
   data = dfm_stm$meta
@@ -119,7 +122,7 @@ num_topics_3 <- 20
 stm_model_3 <- stm(
   documents = dfm_stm$documents,
   vocab = dfm_stm$vocab,
-  K = num_topics,
+  K = num_topics_3,
   prevalence = ~ speaker,  # Include metadata if available
   max.em.its = 75,
   data = dfm_stm$meta
@@ -160,7 +163,7 @@ num_topics_4 <- 0
 stm_model_4 <- stm(
   documents = dfm_stm$documents,
   vocab = dfm_stm$vocab,
-  K = num_topics,
+  K = num_topics_4,
   prevalence = ~ speaker,  # Include metadata if available
   max.em.its = 75,
   data = dfm_stm$meta
