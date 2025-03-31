@@ -68,6 +68,10 @@ summary(dfm_turns)
 
 # Install and load the required libraries
 install.packages("stm")
+install.packages(c("geometry", "Rtsne", "rsvd"))
+library(geometry)
+library(Rtsne)
+library(rsvd)
 library(stm)
 
 # Convert quanteda dfm to STM format
