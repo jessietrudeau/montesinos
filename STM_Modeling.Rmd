@@ -1,8 +1,22 @@
 ---
-title: "STM Modeling"
-output: html_document
-date: "2025-03-30"
+output:
+  pdf_document: default
+  html_document: default
 ---
+
+```{r}
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+install.packages("stm")
+
+
+install.packages("tinytex")
+tinytex::install_tinytex(force = TRUE)
+
+
+```
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
