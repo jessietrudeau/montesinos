@@ -1,56 +1,5 @@
----
-title: "Untitled"
-output:
-  pdf_document: default
-  html_document: default
-date: "2025-03-31"
----
+# 5 Topics
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-#STM Models
-
-```{r}
-# Install and load the required libraries
-#install.packages("stm")
-#install.packages(c("geometry", "Rtsne", "rsvd"))
-#install.packages("reshape2")
-
-#library(geometry)
-#library(Rtsne)
-#library(rsvd)
-#library(stm)
-#library(tidyverse)
-#library(tidytext)
-#library(reshape2)
-```
-
-
-```{r}
-# Convert quanteda dfm to STM format
-dfm_stm <- convert(dfm_general, to = "stm")
-```
-
-
-```{r}
-# Define the number of topics (e.g., 5 topics)
-num_topics_1 <- 5
-
-# Fit the STM model
-stm_model_1 <- stm(
-  documents = dfm_stm$documents,
-  vocab = dfm_stm$vocab,
-  K = num_topics_1,
-  prevalence = ~ speaker,  # Include metadata if available
-  max.em.its = 75,
-  data = dfm_stm$meta
-)
-
-# Inspect top words for each topic
-labelTopics(stm_model_1, n=10)
 
 # Plot topic proportions
 plot.STM(stm_model_1, type = "labels", labeltype = "frex")
@@ -73,25 +22,10 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
   labs(title = "Top Terms by Topic",
        x = "Term",
        y = "Probability (Beta)")
-```
 
 
-```{r}
-# Define the number of topics (e.g., 5 topics)
-num_topics_2 <- 10
+# 10 Topics
 
-# Fit the STM model
-stm_model_2 <- stm(
-  documents = dfm_stm$documents,
-  vocab = dfm_stm$vocab,
-  K = num_topics_2,
-  prevalence = ~ speaker,  # Include metadata if available
-  max.em.its = 75,
-  data = dfm_stm$meta
-)
-
-# Inspect top words for each topic
-labelTopics(stm_model_2, n=10)
 
 # Plot topic proportions
 plot.STM(stm_model_2, type = "labels", labeltype = "frex")
@@ -114,25 +48,10 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
   labs(title = "Top Terms by Topic",
        x = "Term",
        y = "Probability (Beta)")
-```
 
 
-```{r}
-# Define the number of topics (e.g., 5 topics)
-num_topics_3 <- 20
+# 20 Topics
 
-# Fit the STM model
-stm_model_3 <- stm(
-  documents = dfm_stm$documents,
-  vocab = dfm_stm$vocab,
-  K = num_topics_3,
-  prevalence = ~ speaker,  # Include metadata if available
-  max.em.its = 75,
-  data = dfm_stm$meta
-)
-
-# Inspect top words for each topic
-labelTopics(stm_model_3, n=10)
 
 # Plot topic proportions
 plot.STM(stm_model_3, type = "labels", labeltype = "frex")
@@ -155,25 +74,10 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
   labs(title = "Top Terms by Topic",
        x = "Term",
        y = "Probability (Beta)")
-```
 
 
-```{r}
-# Define the number of topics (e.g., 5 topics)
-num_topics_4 <- 0
+# 0 Topics
 
-# Fit the STM model
-stm_model_4 <- stm(
-  documents = dfm_stm$documents,
-  vocab = dfm_stm$vocab,
-  K = num_topics_4,
-  prevalence = ~ speaker,  # Include metadata if available
-  max.em.its = 75,
-  data = dfm_stm$meta
-)
-
-# Inspect top words for each topic
-labelTopics(stm_model_4, n=10)
 
 # Plot topic proportions
 plot.STM(stm_model_4, type = "labels", labeltype = "frex")
@@ -197,5 +101,4 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
        x = "Term",
        y = "Probability (Beta)")
 
-```
 
