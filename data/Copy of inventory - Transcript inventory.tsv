@@ -1,80 +1,43 @@
 n	date	speakers	original_n	in_book	in_online_archive	type	topic_referendum	topic_ecuador	topic_lucchetti_factory	topic_municipal98	topic_reelection	topic_miraflores	topic_canal4	topic_media	topic_promotions	topic_ivcher	topic_foreign	topic_wiese	topic_public_officials	topic_safety	topic_state_capture
-1	3/25/1997	Javier Alva Orlandini, Victor Garcia	1014-1015	x		audio															
-2	3/26/1997	Luis Percovich	1016	x		video															
-3	3/26/1997	Pablo Lupis Cid	1017	x		video															
-4	6/13/1997	General EE Francisco Moncayo	s/n	x		video															
-5	1/8/1998	Montesinos Torres, Daniel Borobio Guede, ciudadano chileno	864	x	x	video			x		x										
-6	1/12/1998	Patricio Ricketts, Montesinos Torres	1312	x		video															
-7	1/15/1998	Alex Kouri Bumachar, Congresista Absalon Vasquez, Congresista Luz Salgado, Montesinos Torres	866	x	x	video				x			x	x							
-8	1/20/1998	Julio Vera Abad, Vladimiro Montesinos	896	x		audio															
-9	1/23/1988	Montesinos Torres, Eduardo Ferrero Costa	869	x	x	video		x						x							
-10	1/28/1998	Kouri Bumachar, Montesinos Torres	872	x	x	video				x											
+104		Jefes policiales, Montesinos Torres	353	x		audio															
+19	4/21/1998	Barry McCaffrey, Montesinos Torres, Marino Costa, alto mando militar	848	x		video															
 11	2/10/1998	Lucchetti, Montesinos Torres	858	x	x	audio			x												
 12	2/10/1998	Representante de Lucchetti, Montesinos Torres	859	x	x	audio			x												
-13	2/26/1998	"señor americano", Montesinos Torres	C-72 (2)	x		audio															
-14	3/5/1998	Barley, Delegacion Israeli	919	x	x	audio															
-15	3/6/1998	Andronico Luksic, Montesinos Torres	857, 856	x	x	video			x												
-16	4/3/1998	NM C-90, Montesinos Torres	806, 807, 808, 809	x	x	audio					x									x	x
+5	1/8/1998	Montesinos Torres, Daniel Borobio Guede, ciudadano chileno	864	x	x	video			x		x										
+7	1/15/1998	Alex Kouri Bumachar, Congresista Absalon Vasquez, Congresista Luz Salgado, Montesinos Torres	866	x	x	video				x			x	x							
+9	1/23/1988	Montesinos Torres, Eduardo Ferrero Costa	869	x	x	video		x						x							
+10	1/28/1998	Kouri Bumachar, Montesinos Torres	872	x	x	video				x											
 17	4/14/1998	Montesinos Torres, Don	876	x	x	video														x	
-18	4/14/1998	Ivachini	M04-3		x	video															
-19	4/21/1998	Barry McCaffrey, Montesinos Torres, Marino Costa, alto mando militar	848	x		video															
-20	4/29/1998	Luisa Maria Cuculiza Torre, General EP Briones, Montesinos Torres, Alberto Fujimori	880, 881	x	x	video			x											x	
-21	5/3/1998	Alipio Montes de Oca, Castillo, Serpa, Montesinos Torres	888, 889	x	x	video					x										x
 22	5/5/1998	José Dellepiane Massa, Montesinos Torres	884	x	x	video															x
 23	5/19/1998	Jaime Beltrán Quiroga, Montesinos Torres	892	x	x	video		x													
 24	5/20/1998	Denis Jett, Marino Costa, Montesinos Torres	894	x		audio															
-25	5/28/1998	Patricio Arancibia, Montesinos Torres	924, 925, 926	x		video															
-26	6/12/1998	Javier Valle Riestra, Montesinos Torres	910, 911, 912	x	x	video					x									x	
+8	1/20/1998	Julio Vera Abad, Vladimiro Montesinos	896	x		audio															
 27	6/12/1998	Santander, Javier Valle Riestra Gonzales Olaechea, Montesinos Torres.	904	x	x	video														x	
 28	6/13/1998	Santander, Montesinos Torres	907	x	x	video															x
-29	7/17/1999	Luis Bedoya de Vivanco, Montesinos Torres	1577, 1578	x	x	video						x	x								
-30	7/20/1998	Garcia Marcelo, Hernandez Canelo, Montesinos Torres	913	x	x	video		x			x										x
-31	7/21/1998	Medelius Rodrigo, Romulo Munoz, Montesinos Torres	916	x	x	video					x										x
-32	7/24/1998	Altos mandos castrenses	974, 975, 976, 977, 978	x	x	video					x										x
-33	8/2/1998	Borobio Guede, Hurtado Miller, Montesinos Torres	1188, 1189	x	x	video				x				x							
-34	8/11/1998	Juan Carlos Hurtado Miller, Montesinos Torres.	1183, 1184	x	x	video				x				x							
-35	8/14/1998	Serpa, Bringas, Victor Joy Way	1195, 1196	x	x	audio					x			x							x
-36	8/20/1998	General EP Hermoza Rios, General EP Villanueva Ruesta, General PNP Dianderas O, General FAP Elesban Vello, Almirante Ibarcena, General EP Salazar Monroe, General EP Saucedo, Montesinos Torres, Alberto Fujimori	1168, 1169	x	x	video									x						
+30	7/20/1998	Garcia Marcelo, Hernandez Canelo, Montesinos Torres	913	x	x	video	x	x			x										x
+31	7/21/1998	Medelius Rodrigo, Romulo Munoz, Montesinos Torres	916	x	x	video	x				x										x
+14	3/5/1998	Barley, Delegacion Israeli	919	x	x	audio	x														
+2	3/26/1997	Luis Percovich	1016	x		video															
+3	3/26/1997	Pablo Lupis Cid	1017	x		video															
 37	9/8/1998	Alex Kouri, Montesinos Torres	1172	x		audio															
 38	9/9/1998	Antonio Ibárcena, Alex Kouri, Francisco Kouri, Montesinos Torres	1174	x		video															
 39	9/10/1998	Alex Kouri, Montesinos Torres	1177	x		audio															
-40	9/14/1998	Romulo Muños, Medlius	1317, 1318	x	x	video					x										
 41	9/15/1998	Alex Kouri, Montesinos Torres	1182	x		audio															
 42	9/22/1998	Luis Venero Garrido, Ernesto Gamarra Olivares, Roberto Huaman Azcurra, Manuel Tafur Ruiz	1192	x	x	video								x							
 43	10/12/1998	Trelles Montero, Alberto Fujimori	1230	x	x	video		x						x							
-44	10/12/1998	Vera Gutiérrez, Borobio, Julio Vera, Montesinos Torres	1197, 1199	x	x	video		x						x							
-45	10/14/1998	Jose Francisco Crousillat, Montesinos Torres	1200, 1201	x	x	video							x	x							
+51	1/5/1999	Joy Way Rojas, Maria Cuculiza Torre, Montesinos Torres	1292	x	x	video													x		
+6	1/12/1998	Patricio Ricketts, Montesinos Torres	1312	x		video															
 46	11/12/1998	Romulo Muños, Montesinos Torres	1321	x	x	video					x										
 47	11/23/1998	Manuel Guillen, Montesinos Torres	1324	x		video															
-48	12/7/1998	Montesinos Torres, General EP Villanueva Ruesta, Oficiales EP	1300, 1302	x	x	video					x				x						
-49	12/7/1998	Montesino Torres, General EP Villanueva Ruesta, Oficiales EP	1299, 1301	x	x	video									x						
-50	12/31/1998	Carlos Ferrero, Montesinos Torres	1289, 1290	x	x	audio								x							
-51	1/5/1999	Joy Way Rojas, Maria Cuculiza Torre, Montesinos Torres	1292	x	x	video													x		
-52	2/26/1999	Jose Francisco Crousillat, Montesinos Torres, Gisela Valcarcel, Jose Enrique Crouisillat	1347, 1348, 1349, 1350	x	x	video							x					x			
-53	3/13/1999	General EP Salazar Monroe, General EP Villanueva, General EP Saucedo, Almirante Ibarcena Amico, General FAP Bello Vasquez, General PNP Dianderas, Contralmirante Rosas, Oficiales FFAA, Oficiales PNP, Montesinos Torres	1368, 1369, 1370, 1371, 1372, 1373, 1374	x	x	video										x					
-54	3/19/1999	General EP Salazar Monroe, General EP Villanueva, General EP Saucedo, Almirante Ibarcena Amico, General FAP Bello Vasquez, General PNP Dianderas, Contralmirante Rosas, Oficiales FFAA, Oficiales PNP, Montesinos Torres	1410, 1411, 1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 1421, 1422, 1423, 1424, 1425, 1426, 1427, 1428, 1429, 1430, 1431	x	x	video										x					
-55	4/4/1999	Victor Joy Way, Delgado Parker, Montesinos Torres	1364, 1365	x		audio								x							
-56	4/7/1999	Victor Joy Way, Delgado Parker, Montesinos Torres	1459, 1460	x	x	video								x							
-57	4/13/1999	Eduardo Calmell Del Solar, Montesinos Torres	1475, 1476	x	x	audio										x					
 58	4/21/1999	Eduardo Calmell Del Solar, Montesinos Torres	1492	x	x	audio								x		x					
-59	4/21/1999	Genaro Delgado Parker, Montesinos Torres	1487, 1488	x	x	video								x			x				
-60	6/12/1999	Luis Bedoya de Vivanco, Reategui, Montesinos Torres	1568, 1569	x	x	video						x									
-61	7/5/1999	Luis Bedoya de Vivanco, Montesinos Torres	1601, 1602	x	x	video						x									
-62	6/14/1999	Comandantes Generales, Dionisio Romero, Montesinos Torres	1574, 1575	x	x	video					x			x							
 63	6/22/1999	Dionisio Romero, Montesinos Torres	1583	x		video					x										
-64	7/15/1999	Victor Joy Way, Bustamente, Gross, Montesinos Torres	1692	x		video										x				x	
-65	7/19/1999	Montesinos Torres, Embajador, General EP Villanueva Ruesta, General EP Bergamino	1604, 1605	x	x	video											x				
-66	7/19/1999	Crousillat, Wo, Bertini, Montesinos Torres	1607, 1608, 1609	x	x	video							x					x			
-67	7/22/1999	Humberto Rozas, Dunn, Montesinos Torres, 	1613-A	x		audio											x			x	
-68	7/22/1999	General EP Bergamino, General EP Saucedo, General EP Villanueva, Almirante Ibarcena, General FAP Elesban Bello, General PNP Dianderas, Montesinos Torres	1614, 1615	x	x	video									x		x		x		
 69	8/18/1999	Marino Costa, Montesinos Torres, Heather	1663	x		audio														x	
-70	8/25/1999	Montesinos Torres, Delgado Parker, Schutz	1677, 1678, 1679	x	x	video							x	x							
 71	9/1/1999	Defensor del Pueblo, General EP Villanueva Ruesta, Montesinos Torres	1682	x	x	video								x							
+64	7/15/1999	Victor Joy Way, Bustamente, Gross, Montesinos Torres	1692	x		video										x				x	
 72	9/4/1999	Eduardo Calmell Del Solar, Montesinos Torres	1736	x	x	video								x							
 73	10/5/1999	Eduardo Calmell Del Solar, Montesinos Torres	1753	x	x	video								x							
 74	11/6/1999	General Delgado, Vicente Silva, Eduardo Calmell, Vladimiro Montesinos	1780	x		audio								x							
 75	11/10/1999	Domingo Palermo, Montesinos Torres	1782	x		video								x							
-76	11/11/1999	Montesinos Torres, Bertini	1788, 1789, 1790	x	x	video							x					x			
 77	11/26/1999	General Villanueva, Almirante Ibarcena, General Bello	1792	x	x	video					x				x						
 78	11/26/1999	General Villanueva, Almirante Ibarcena, General Bello, Winter	1795	x	x	video					x				x						
 79	12/3/1999	Enrique Chirinos Soto, Montesinos Torres	1798	x		video															
@@ -82,24 +45,61 @@ n	date	speakers	original_n	in_book	in_online_archive	type	topic_referendum	topic
 81	12/25/1999	Ketin Vidal, Montesinos Torres	1809	x		video					x										
 82	1/27/2000	Alex Kouri Bumachar, Jose Francisco Crousillat, Montesinos Torres	1822	x	x	video					x										
 83	2/2/2000	Alex Kouri Bumachar, Montesinos Torres	1825	x	x	video					x										
-84	2/7/2000	Osmán Morote, María Pantoja, Montesinos Torres	C-72	x		audio														x	
-85	3/13/2000	Mantilla Campos, Montesinos Torres	1830, 1831	x	x	video					x										
 86	3/15/2000	Alex Kouri Bumachar, Montesinos Torres	1833	x	x	video															
-87	5/15/2000	Alberto Kouri, Montesinos Torres	N/A	x		audio															
-88	7/28/2000	Francisco Tudela, Montesinos Torres	352-A	x		audio					x			x		x					
+1	3/25/1997	Javier Alva Orlandini, Victor Garcia	1014-1015	x		audio															
+36	8/20/1998	General EP Hermoza Rios, General EP Villanueva Ruesta, General PNP Dianderas O, General FAP Elesban Vello, Almirante Ibarcena, General EP Salazar Monroe, General EP Saucedo, Montesinos Torres, Alberto Fujimori	1168, 1169	x	x	video									x						
+34	8/11/1998	Juan Carlos Hurtado Miller, Montesinos Torres.	1183, 1184	x	x	video				x				x							
+33	8/2/1998	Borobio Guede, Hurtado Miller, Montesinos Torres	1188, 1189	x	x	video	x			x				x							
+35	8/14/1998	Serpa, Bringas, Victor Joy Way	1195, 1196	x	x	audio	x				x			x							x
+44	10/12/1998	Vera Gutiérrez, Borobio, Julio Vera, Montesinos Torres	1197, 1199	x	x	video		x						x							
+45	10/14/1998	Jose Francisco Crousillat, Montesinos Torres	1200, 1201	x	x	video							x	x							
+50	12/31/1998	Carlos Ferrero, Montesinos Torres	1289, 1290	x	x	audio								x							
+49	12/7/1998	Montesino Torres, General EP Villanueva Ruesta, Oficiales EP	1299, 1301	x	x	video									x						
+48	12/7/1998	Montesinos Torres, General EP Villanueva Ruesta, Oficiales EP	1300, 1302	x	x	video					x				x						
+40	9/14/1998	Romulo Muños, Medlius	1317, 1318	x	x	video	x				x										
+52	2/26/1999	Jose Francisco Crousillat, Montesinos Torres, Gisela Valcarcel, Jose Enrique Crouisillat	1347, 1348, 1349, 1350	x	x	video							x					x			
+55	4/4/1999	Victor Joy Way, Delgado Parker, Montesinos Torres	1364, 1365	x		audio								x							
+53	3/13/1999	General EP Salazar Monroe, General EP Villanueva, General EP Saucedo, Almirante Ibarcena Amico, General FAP Bello Vasquez, General PNP Dianderas, Contralmirante Rosas, Oficiales FFAA, Oficiales PNP, Montesinos Torres	1368, 1369, 1370, 1371, 1372, 1373, 1374	x	x	video										x					
+54	3/19/1999	General EP Salazar Monroe, General EP Villanueva, General EP Saucedo, Almirante Ibarcena Amico, General FAP Bello Vasquez, General PNP Dianderas, Contralmirante Rosas, Oficiales FFAA, Oficiales PNP, Montesinos Torres	1410, 1411, 1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 1421, 1422, 1423, 1424, 1425, 1426, 1427, 1428, 1429, 1430, 1431	x	x	video										x					
+56	4/7/1999	Victor Joy Way, Delgado Parker, Montesinos Torres	1459, 1460	x	x	video								x							
+57	4/13/1999	Eduardo Calmell Del Solar, Montesinos Torres	1475, 1476	x	x	audio										x					
+59	4/21/1999	Genaro Delgado Parker, Montesinos Torres	1487, 1488	x	x	video								x			x				
+60	6/12/1999	Luis Bedoya de Vivanco, Reategui, Montesinos Torres	1568, 1569	x	x	video						x									
+62	6/14/1999	Comandantes Generales, Dionisio Romero, Montesinos Torres	1574, 1575	x	x	video					x			x							
+29	7/17/1999	Luis Bedoya de Vivanco, Montesinos Torres	1577, 1578	x	x	video						x	x								
+61	7/5/1999	Luis Bedoya de Vivanco, Montesinos Torres	1601, 1602	x	x	video						x									
+65	7/19/1999	Montesinos Torres, Embajador, General EP Villanueva Ruesta, General EP Bergamino	1604, 1605	x	x	video											x				
+66	7/19/1999	Crousillat, Wo, Bertini, Montesinos Torres	1607, 1608, 1609	x	x	video							x					x			
+67	7/22/1999	Humberto Rozas, Dunn, Montesinos Torres, 	1613-A	x		audio											x			x	
+68	7/22/1999	General EP Bergamino, General EP Saucedo, General EP Villanueva, Almirante Ibarcena, General FAP Elesban Bello, General PNP Dianderas, Montesinos Torres	1614, 1615	x	x	video									x		x		x		
+70	8/25/1999	Montesinos Torres, Delgado Parker, Schutz	1677, 1678, 1679	x	x	video							x	x							
+76	11/11/1999	Montesinos Torres, Bertini	1788, 1789, 1790	x	x	video							x					x			
+85	3/13/2000	Mantilla Campos, Montesinos Torres	1830, 1831	x	x	video					x										
+102		Montesinos Torres	351-A	x		audio															
 89	8/15/2000	Carlos Boloña, Montesinos Torres	351-A (1)	x		audio									x						
 90	8/15/2000	Funcionario del Banco Wiese, Montesinos Torres	351-A (side B)	x		audio															
-91	8/18/2000	Luis Frank Aybar Cancho, José Manuel López Rodríguez, Rhaquel Granda, Del Mar Colina	P/I Siberia Casete B	x		video															
+88	7/28/2000	Francisco Tudela, Montesinos Torres	352-A	x		audio					x			x		x					
+16	4/3/1998	NM C-90, Montesinos Torres	806, 807, 808, 809	x	x	audio					x									x	x
+15	3/6/1998	Andronico Luksic, Montesinos Torres	857, 856	x	x	video			x												
+20	4/29/1998	Luisa Maria Cuculiza Torre, General EP Briones, Montesinos Torres, Alberto Fujimori	880, 881	x	x	video			x											x	
+21	5/3/1998	Alipio Montes de Oca, Castillo, Serpa, Montesinos Torres	888, 889	x	x	video					x										x
+26	6/12/1998	Javier Valle Riestra, Montesinos Torres	910, 911, 912	x	x	video	x				x									x	
+25	5/28/1998	Patricio Arancibia, Montesinos Torres	924, 925, 926	x		video															
+32	7/24/1998	Altos mandos castrenses	974, 975, 976, 977, 978	x	x	video					x										x
+98	4/15/2000	Francisco Tudela, Montesinos Torres	A15-B8	x		video											x				
+95	6/15/2000	Montesinos Torres	B - 139 "4A"	x		audio							x	x		x					
+103	visperas de la segunda vuelta electoral	Cupula militar, Montesinos Torres	B 139 A-4	x		audio															
+97		Montesinos Torres	B/1-B	x		audio															
+84	2/7/2000	Osmán Morote, María Pantoja, Montesinos Torres	C-72	x		audio														x	
+96	4/25/1999	Alamo Perez, Alberto Fujimori, Montesinos Torres	C-72	x		video							x								
+13	2/26/1998	"señor americano", Montesinos Torres	C-72 (2)	x		audio															
 92	8/18/2000	Ivachini, Diplomaticos	M04-1		x	video															
 93	8/20/0200	Ivachini	M04-2		x	video															
-94		Joy Way, Schutz, Montesinos	SN/SF	x		video															
-95	6/15/2000	Montesinos Torres	B - 139 "4A"	x		audio							x	x		x					
-96	4/25/1999	Alamo Perez, Alberto Fujimori, Montesinos Torres	C-72	x		video							x								
-97		Montesinos Torres	B/1-B	x		audio															
-98	4/15/2000	Francisco Tudela, Montesinos Torres	A15-B8	x		video											x				
+18	4/14/1998	Ivachini	M04-3		x	video															
+87	5/15/2000	Alberto Kouri, Montesinos Torres	N/A	x		audio															
 99		Jose Luis, Luis Frank Aybar Cancho	P/I Casete C	x		video															
 100		Jose Luis, Luis Frank Aybar Cancho	P/I Casete D	x		video															
 101		Liliana Villarreal, Arnulfo Alvarado, Luis Frank Aybar	P/I Casete E	x		video															
-102		Montesinos Torres	351-A	x		audio															
-103	visperas de la segunda vuelta electoral	Cupula militar, Montesinos Torres	B 139 A-4	x		audio															
-104		Jefes policiales, Montesinos Torres	353	x		audio															
+91	8/18/2000	Luis Frank Aybar Cancho, José Manuel López Rodríguez, Rhaquel Granda, Del Mar Colina	P/I Siberia Casete B	x		video															
+4	6/13/1997	General EE Francisco Moncayo	s/n	x		video															
+94		Joy Way, Schutz, Montesinos	SN/SF	x		video															
