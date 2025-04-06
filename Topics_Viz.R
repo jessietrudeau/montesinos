@@ -257,6 +257,58 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
        y = "Probability (Beta)")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+# Extract top FREX and Prob terms
+labels_3 <- labelTopics(stm_model_3, n = 10)
+
+# Create a data frame with FREX and Prob terms
+topic_terms_3 <- data.frame(
+  topic = rep(1:num_topics_3, each = 10),
+  frex = as.vector(t(labels_3$frex)),
+  prob = as.vector(t(labels_3$prob))
+)
+
+# Combine FREX and Prob term for labeling
+topic_terms_3 <- topic_terms_3 %>%
+  mutate(term_label = paste0(frex, " (", prob, ")"))
+
+# Extract beta values
+td_beta_3 <- tidy(stm_model_3)
+
+# Join with FREX terms to include beta values for plotting
+top_terms_3 <- td_beta_3 %>%
+  inner_join(topic_terms_3, by = c("topic", "term" = "frex"))
+
+# Plot with ggplot2
+ggplot(top_terms_3, aes(x = reorder_within(term_label, beta, topic), y = beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_y") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Top FREX Terms by Topic with Probability Labels (Model 3)",
+       x = "FREX Term (Most Probable Term)",
+       y = "Probability (Beta)")
+
+
+
+
+
+
+
+
+
+
 #-----------------------------Topics 0
 
 
@@ -305,6 +357,45 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
 
 
 
+
+
+
+
+
+
+# Extract number of topics from model
+num_topics_actual <- stm_model_4$settings$dim$K
+
+# Extract top FREX and Prob terms
+labels_4 <- labelTopics(stm_model_4, n = 10)
+
+# Create data frame for FREX and Prob terms
+topic_terms_4 <- data.frame(
+  topic = rep(1:num_topics_actual, each = 10),
+  frex = as.vector(t(labels_4$frex)),
+  prob = as.vector(t(labels_4$prob))
+)
+
+# Combine FREX and Prob term for readable labels
+topic_terms_4 <- topic_terms_4 %>%
+  mutate(term_label = paste0(frex, " (", prob, ")"))
+
+# Get beta values from STM model
+td_beta_4 <- tidy(stm_model_4)
+
+# Join with FREX terms
+top_terms_4 <- td_beta_4 %>%
+  inner_join(topic_terms_4, by = c("topic", "term" = "frex"))
+
+# Plot with ggplot2
+ggplot(top_terms_4, aes(x = reorder_within(term_label, beta, topic), y = beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_y") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = paste("Top FREX Terms by Topic with Probabilities (Model 4, K =", num_topics_actual, ")"),
+       x = "FREX Term (Most Probable Term)",
+       y = "Probability (Beta)")
 
 
 
