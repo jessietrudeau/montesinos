@@ -561,6 +561,7 @@ ggplot(top20_speakers, aes(x = reorder(Speaker, -Average_Words_Per_Appearance), 
 ```{r}
 
 
+
 # Load required packages
 library(readr)
 library(dplyr)
@@ -574,10 +575,10 @@ library(stringr)  # For counting speakers
 file_path <- "data/Copy of inventory - Transcript inventory.tsv"
 data <- read_tsv(file_path)
 
-# Convert 'date' column to Date format
+# Convert 'date' column to Date format and filter out dates before 1990
 data <- data %>%
   mutate(date = mdy(date)) %>%
-  filter(!is.na(date))
+  filter(!is.na(date) & date >= as.Date("1990-01-01"))
 
 # Count number of speakers
 data <- data %>%
@@ -601,17 +602,13 @@ ggplot(long_data, aes(x = date, y = topic, color = num_speakers)) +
                                                    median(long_data$num_speakers, na.rm = TRUE), 
                                                    quantile(long_data$num_speakers, 0.75, na.rm = TRUE), 
                                                    max(long_data$num_speakers, na.rm = TRUE)))) +
-  scale_x_date(date_breaks = "5 years", date_labels = "%Y") +
+  scale_x_date(date_breaks = "1 year", date_minor_breaks = "3 months", date_labels = "%Y-%m") +
   labs(title = "Timeline of Conversations by Topic",
        subtitle = "Based on transcript inventory",
        x = "Date",
        y = "Topic",
        color = "Number of Speakers") +
   theme_minimal()
-
-
-
-
 
 ```
 
