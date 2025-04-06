@@ -39,6 +39,8 @@ labelTopics(stm_model_1, n=10)
 #Save stm_model
 saveRDS(stm_model_1, file = "stm_model_1.rds")
 
+stm_model_1 <- readRDS("stm_model_1.rds")
+
 # Plot topic proportions
 plot.STM(stm_model_1, type = "labels", labeltype = "frex")
 
@@ -83,6 +85,8 @@ labelTopics(stm_model_2, n=10)
 
 #Save stm_model
 saveRDS(stm_model_2, file = "stm_model_2.rds")
+
+stm_model_2 <- readRDS("stm_model_2.rds")
 
 # Plot topic proportions
 plot.STM(stm_model_2, type = "labels", labeltype = "frex")
@@ -129,6 +133,8 @@ labelTopics(stm_model_3, n=10)
 #Save stm_model
 saveRDS(stm_model_3, file = "stm_model_3.rds")
 
+stm_model_3 <- readRDS("stm_model_3.rds")
+
 # Plot topic proportions
 plot.STM(stm_model_3, type = "labels", labeltype = "frex")
 
@@ -173,6 +179,8 @@ labelTopics(stm_model_4, n=10)
 
 #Save stm_model
 saveRDS(stm_model_4, file = "stm_model_4.rds")
+
+stm_model_4 <- readRDS("stm_model_4.rds")
 
 # Plot topic proportions
 plot.STM(stm_model_4, type = "labels", labeltype = "frex")
