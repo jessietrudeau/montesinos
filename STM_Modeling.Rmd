@@ -52,6 +52,9 @@ stm_model_1 <- stm(
 # Inspect top words for each topic
 labelTopics(stm_model_1, n=10)
 
+#Save stm_model
+saveRDS(stm_model_1, file = "stm_model_1.rds")
+
 # Plot topic proportions
 plot.STM(stm_model_1, type = "labels", labeltype = "frex")
 
