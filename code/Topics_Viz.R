@@ -256,6 +256,47 @@ ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = fa
        x = "Term",
        y = "Probability (Beta)")
 
+# Create a lookup table of topic labels
+topic_labels <- tibble::tibble(
+  topic = 1:20,
+  label = c(
+    "Clarity in Conversations",
+    "Negotiation",
+    "Government Procedures",
+    "Coercion",
+    "Denial & Control",
+    "Influence",
+    "Surveillance",
+    "Bribery",
+    "Strategy",
+    "Media Control",
+    "Persuasion / Rationalization",
+    "Timeline Construction",
+    "Military Operations",
+    "Vladimir Montesinos",
+    "Daily Operations",
+    "Medical",
+    "Rank Structure",
+    "Law & National Defense",
+    "Armed Forces & Police",
+    "Power & Priorities"
+  )
+)
+
+# Join with top_terms
+top_terms_labeled <- top_terms %>%
+  left_join(topic_labels, by = "topic")
+
+# Plot using labeled facets
+ggplot(top_terms_labeled, aes(x = reorder_within(term, beta, topic), y = beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ label, scales = "free_y") +  # Use 'label' for descriptive facets
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Top Terms by Topic",
+       x = "Term",
+       y = "Probability (Beta)") +
+  theme(strip.text = element_text(size = 10, face = "bold"))  # Optional: style facet labels
 
 
 
