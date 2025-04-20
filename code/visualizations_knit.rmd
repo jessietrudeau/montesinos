@@ -24,7 +24,7 @@ library(tidyr)
 library(stringr)
 
 # Step 1: Read the inventory file
-file <- "data/Copy of inventory - Transcript inventory.tsv"
+file <- "../data/Copy of inventory - Transcript inventory.tsv"
 inventory <- read_tsv(file)
 
 # Step 2: Identify topic columns
@@ -60,16 +60,16 @@ ggplot(topic_counts, aes(x = reorder(Topic, Transcript_Count), y = Transcript_Co
 # Word Count Proportion (excluding 'desconoocido')
 ```{r}
 
-install.packages("readr")
-install.packages("dplyr")
-install.packages("ggplot2")
+#install.packages("readr")
+#install.packages("dplyr")
+#install.packages("ggplot2")
 
 library(readr)
 library(dplyr)
 library(ggplot2)
 
 # Read in File
-file_path <- "data/count_results_all.tsv"
+file_path <- "../data/count_results_all.tsv"
 word_data <- read_tsv(file_path)
 
 # Exclude 'DESCONOCIDO'
@@ -123,7 +123,7 @@ library(dplyr)
 library(readr)
 
 # Load the dataset
-file<-"output/speaker_frequency_results(all).csv"
+file<-"../output/speaker_frequency_results(all).csv"
 df <- read_csv(file)
 
 # Filter out 'Montesinos' and 'Desconocido'
@@ -160,10 +160,10 @@ ggplot(df_top20, aes(x = reorder(Speaker, -Frequency), y = Frequency)) +
 ```{r}
 
 # Install & Library necessary packages
-install.packages("tidyr")
-install.packages("tidyverse")
-install.packages("dplyr")
-install.packages("ggplot2")
+#install.packages("tidyr")
+#install.packages("tidyverse")
+#install.packages("dplyr")
+#install.packages("ggplot2")
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -171,7 +171,7 @@ library(tidyverse)
 
 
 # Read in 'topic_vmt_avg_count.csv' file
-file<-"output/topic_vmt_avg_count.csv"
+file<-"../output/topic_vmt_avg_count.csv"
 df <- read.csv(file)
 
 # Remove 'topic_' prefix from 'Topic' column
@@ -215,7 +215,7 @@ ggplot(df_long, aes(x = Topic, y = Word_Count, fill = Word_Count_Type)) +
 ## Average Length of Conversations
 ```{r}
 # Define the path to the finalized_data folder
-data_path <- "data/modified_data/finalized_data"
+data_path <- "../data/modified_data/finalized_data"
 
 # Get a list of CSV and TSV files from finalized_data without setting it as the working directory
 csv_files <- list.files(path = data_path, pattern = "\\.csv$", full.names = TRUE)
@@ -332,8 +332,8 @@ library(stringr)
 library(ggplot2)
 
 # Define file paths
-inventory_file <- "data/Copy of inventory - Transcript inventory.tsv"
-directory_path <- "data/modified_data/finalized_data"
+inventory_file <- "../data/Copy of inventory - Transcript inventory.tsv"
+directory_path <- "../data/modified_data/finalized_data"
 
 # Read the inventory data
 inventory_data <- read_tsv(inventory_file, col_types = cols())
@@ -435,13 +435,13 @@ print(paste("Total Word Count Across All Transcripts:", sum(word_count_df$Word_C
 # Bar Plot
 ```{r}
 # Define the path to the finalized_data folder (relative to current working directory)
-finalized_data_path <- "data/modified_data/finalized_data"
+finalized_data_path <- "../data/modified_data/finalized_data"
 
 # Load necessary libraries
-install.packages("readr")
-install.packages("stringr")
-install.packages("dplyr")
-install.packages("ggplot2")
+#install.packages("readr")
+#install.packages("stringr")
+#install.packages("dplyr")
+#install.packages("ggplot2")
 
 library(readr)   # For reading CSV & TSV files
 library(stringr) # For text processing
@@ -572,7 +572,7 @@ library(lubridate)
 library(stringr)  # For counting speakers
 
 # Read the TSV file
-file_path <- "data/Copy of inventory - Transcript inventory.tsv"
+file_path <- "../data/Copy of inventory - Transcript inventory.tsv"
 data <- read_tsv(file_path)
 
 # Convert 'date' column to Date format and filter out dates before 1990
@@ -615,9 +615,8 @@ ggplot(long_data, aes(x = date, y = topic, color = num_speakers)) +
 
 # Summary Table
 ```{r}
-
 # Create a summary table counting occurrences of each unique value in "Type_Merged"
-file <- "data/Copy of Master - transcript notes - Actors.tsv"
+file <- "../data/Copy of Master - transcript notes - Actors.tsv"
 df <- read_tsv(file)
 
 
@@ -637,7 +636,7 @@ df$Type_Merged <- ifelse(!is.na(df$Montesinos_inner_circle) & df$Montesinos_inne
 head(df[, c("Type", "Montesinos_inner_circle", "Type_Merged")])
 
 # Define output file path
-output_file<-"data/transcript_notes_cleaned.tsv"
+output_file<-"../data/transcript_notes_cleaned.tsv"
 
 # Write the cleaned dataset to a new CSV file
 write_csv(df, output_file)
@@ -653,7 +652,72 @@ type_summary <- df %>%
 
 # Print summary table
 print(type_summary)
+```
 
+
+```{r}
+library(readr)
+library(dplyr)
+
+# 1. Read and clean names as before
+# read
+df <- readr::read_tsv("../data/Copy of Master - transcript notes - Actors.tsv")
+
+# clean column names
+colnames(df) <- gsub(" ", "_", colnames(df))
+colnames(df) <- gsub("'",   "",  colnames(df))
+
+
+# 2. Build a new “Type_All” that always preserves Type
+df <- df %>%
+  mutate(
+    Type_All = case_when(
+      !is.na(Montesinos_inner_circle) & Montesinos_inner_circle == "X" 
+        ~ paste0(Type, " (Inner Circle)"),
+      !is.na(Type) 
+        ~ Type,
+      TRUE 
+        ~ NA_character_
+    )
+  )
+
+# 3. (Optional) Inspect
+head(df[, c("Type", "Montesinos_inner_circle", "Type_All")])
+
+# 4. Write out cleaned data
+write_csv(df, "../data/transcript_notes_inner_circle_cleaned.tsv")
+message("Cleaned dataset saved as: ../data/transcript_notes_inner_circle_cleaned.tsv")
+
+# 5. Summarize on the new column
+type_summary <- df %>%
+  group_by(Type_All) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count))
+
+print(type_summary)
+
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# 1. Subset to Inner Circle only
+inner_df <- df %>%
+  filter(!is.na(Montesinos_inner_circle) & Montesinos_inner_circle == "X")
+
+# 2. Plot count of Types
+ggplot(inner_df, aes(x = Type)) +
+  geom_bar(fill = "steelblue") +                # bar plot of counts
+  labs(
+    title = "Distribution of Types among Inner Circle Members",
+    x     = "Type",
+    y     = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # tilt labels if they overlap
+  )
 
 ```
 
@@ -667,7 +731,7 @@ install.packages("tidyverse")
 library(tidyverse)
 
 # Set the directory where transcript files are stored
-transcript_dir <- "data/modified_data/finalized_data"
+transcript_dir <- "../data/modified_data/finalized_data"
 
 # Get list of all CSV and TSV files
 transcript_files <- list.files(path = transcript_dir, pattern = "\\.(csv|tsv)$", full.names = TRUE)
@@ -710,7 +774,7 @@ speaker_counts <- speaker_visits %>%
   summarize(visits = n(), .groups = "drop")
 
 # Load the master actors dataset
-actors_file <- "data/transcript_notes_cleaned.tsv"
+actors_file <- "../data/transcript_notes_cleaned.tsv"
 actors_data <- read_csv(actors_file, col_types = cols())
 
 # Clean column names to match modifications
@@ -729,10 +793,10 @@ visit_summary <- merged_data %>%
 print(visit_summary)
 
 # Optionally, save to CSV
-write_csv(visit_summary, "data/visit_summary_by_type.csv")
+write_csv(visit_summary, "../data/visit_summary_by_type.csv")
 
 # Load the summarized visit data
-visit_summary <- read_csv("data/visit_summary_by_type.csv", col_types = cols())
+visit_summary <- read_csv("../data/visit_summary_by_type.csv", col_types = cols())
 visit_summary <- visit_summary %>% filter(!is.na(Type_Merged))
 
 # Create a bar plot to visualize the total visits for each type
