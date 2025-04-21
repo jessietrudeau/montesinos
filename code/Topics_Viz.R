@@ -232,7 +232,7 @@ labelTopics(stm_model_3, n=10)
 #Save stm_model
 saveRDS(stm_model_3, file = "stm_model_3.rds")
 
-stm_model_3 <- readRDS("stm_model_3.rds")
+stm_model_3 <- readRDS("output/stm_model_3.rds")
 
 # Plot topic proportions
 plot.STM(stm_model_3, type = "labels", labeltype = "frex")
@@ -297,6 +297,77 @@ ggplot(top_terms_labeled, aes(x = reorder_within(term, beta, topic), y = beta, f
        x = "Term",
        y = "Probability (Beta)") +
   theme(strip.text = element_text(size = 10, face = "bold"))  # Optional: style facet labels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1. Load your fitted STM model
+stm_model_3 <- readRDS("output/stm_model_3.rds")
+
+# 2. Quick plot of topic proportions with FREX labels
+plot.STM(stm_model_3, type = "labels", labeltype = "frex")
+
+# 3. Automatically generate topic labels via labelTopics()
+#    Here we pull the top 3 FREX terms per topic and paste them into a label
+lab <- labelTopics(stm_model_3, n = 3, frexweight = 0.5)
+# lab$frex is a matrix: one row per topic, columns are top terms
+topic_labels <- tibble(
+  topic = seq_len(nrow(lab$frex)),
+  label = apply(lab$frex, 1, function(x) paste(x, collapse = ", "))
+)
+
+# 4. Tidy up the per‐term β’s
+td_beta <- tidy(stm_model_3)
+
+# 5. Grab top 10 terms per topic
+top_terms <- td_beta %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>%
+  ungroup()
+
+# 6. Join the auto‐generated labels
+top_terms_labeled <- top_terms %>%
+  left_join(topic_labels, by = "topic")
+
+# 7. Plot with descriptive facet labels
+ggplot(top_terms_labeled,
+       aes(x = reorder_within(term, beta, topic),
+           y = beta,
+           fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ label, scales = "free_y") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(
+    title = "Top Terms by Topic (FREX based Labels)",
+    x = "Term",
+    y = "Probability (Beta)"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 10, face = "bold")
+  )
+
+
+
+
+
+
 
 
 
