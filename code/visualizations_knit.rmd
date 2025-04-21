@@ -724,8 +724,6 @@ ggplot(inner_df, aes(x = Type)) +
 
 # Histograms (Vists by type & Inner Circle V Outer Circle)
 ```{r}
-
-
 # Load required libraries
 install.packages("tidyverse")
 library(tidyverse)
@@ -826,5 +824,101 @@ ggplot(circle_summary, aes(x = circle_group, y = total_visits, fill = circle_gro
        y = "Total Visits") +
   theme_minimal() +
   scale_fill_manual(values = c("Inner Circle" = "red", "Outer Circle" = "blue"))  # Custom colors
+```
 
+
+```{r}
+# 1) Read & clean actors data
+actors_in  <- "../data/Copy of Master - transcript notes - Actors.tsv"
+actors_out <- "../data/transcript_notes_cleaned.tsv"
+
+actors_data <- read_tsv(actors_in, col_types = cols()) %>%
+  # normalize colnames
+  rename_with(~ str_replace_all(.x, " ", "_")) %>%
+  rename_with(~ str_replace_all(.x, "'", "")) %>%
+  # create Type_Merged exactly as before
+  mutate(
+    Type_Merged = if_else(
+      !is.na(Montesinos_inner_circle) & Montesinos_inner_circle == "X",
+      "Inner Circle",
+      Type
+    )
+  )
+
+# save cleaned actors
+write_csv(actors_data, actors_out)
+message("Cleaned actors data saved to: ", actors_out)
+
+# 2) Read all transcripts and count unique speaker appearances
+transcript_dir   <- "../data/modified_data/finalized_data"
+transcript_files <- list.files(transcript_dir, pattern="\\.(csv|tsv)$", full.names=TRUE)
+
+read_transcript <- function(fp) {
+  if (str_detect(fp, "\\.csv$")) read_csv(fp, col_types = cols())
+  else                          read_tsv(fp, col_types = cols())
+}
+
+speaker_visits <- map_df(transcript_files, ~ {
+  df <- read_transcript(.x)
+  if ("speaker_std" %in% names(df)) {
+    df %>% select(speaker_std) %>% distinct() %>%
+      mutate(file = basename(.x))
+  } else {
+    tibble()  # skip if no speaker_std
+  }
+})
+
+speaker_counts <- speaker_visits %>%
+  count(speaker_std, name = "visits")
+
+# 3) Merge counts with actors, flag status
+merged_data <- speaker_counts %>%
+  left_join(
+    actors_data %>% select(speaker_std, Type, Montesinos_inner_circle),
+    by = "speaker_std"
+  ) %>%
+  mutate(
+    status = if_else(
+      !is.na(Montesinos_inner_circle) & Montesinos_inner_circle == "X",
+      "Inner Circle",
+      "Not Inner Circle"
+    )
+  )
+
+# 4) Summarize total visits by Type × status
+visit_summary <- merged_data %>%
+  filter(!is.na(Type)) %>%
+  group_by(Type, status) %>%
+  summarise(
+    total_visits = sum(visits, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# 5) Order Types by overall volume
+type_order <- visit_summary %>%
+  group_by(Type) %>%
+  summarise(overall = sum(total_visits)) %>%
+  arrange(desc(overall)) %>%
+  pull(Type)
+
+visit_summary <- visit_summary %>%
+  mutate(Type = factor(Type, levels = type_order))
+
+# 6) Plot: side‑by‑side bars, red = Inner Circle, blue = Not Inner Circle
+ggplot(visit_summary, aes(x = Type, y = total_visits, fill = status)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  scale_fill_manual(
+    values = c(
+      "Inner Circle"     = "tomato",
+      "Not Inner Circle" = "steelblue"
+    )
+  ) +
+  labs(
+    title = "Total Visits by Type and Inner Circle Status",
+    x     = "Type of Individual",
+    y     = "Total Visits",
+    fill  = ""
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
