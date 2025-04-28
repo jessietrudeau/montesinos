@@ -195,4 +195,6 @@ write_csv(batch1, "batch1.csv")
 write_csv(batch2, "batch2.csv")
 
 
+sum(batch2$speaker_std == "BACKGROUND")
+
 
