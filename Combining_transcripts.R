@@ -35,7 +35,9 @@ for (file_path in all_files) {
 combined_df <- bind_rows(all_data)
 
 # Add a unique row ID column
-combined_df <- combined_df %>% mutate(row_id = row_number()) %>% select(row_id, everything())
+combined_df <- combined_df %>% mutate(id = row_number()) %>% select(id, everything())
+#combined_df <- combined_df %>% rename(text = speech)
+colnames(combined_df)[2] <- text
 
 # Optional: write to CSV
 write_csv(combined_df, "all_transcipts_cleaned.csv")
@@ -112,10 +114,10 @@ for (file_path in all_files) {
 # Combine all valid dataframes
 combined_df <- bind_rows(all_data)
 
-# Add a unique row ID column and make it first
-combined_df <- combined_df %>%
-  mutate(row_id = row_number()) %>%
-  select(row_id, everything())
+# Add a unique row ID column
+combined_df <- combined_df %>% mutate(id = row_number()) %>% select(id, everything())
+#combined_df <- combined_df %>% rename(text = speech)
+colnames(combined_df)[2] <- "text"
 
 # Optional: write to CSV
 write_csv(combined_df, "all_transcripts_cleaned.csv")
@@ -151,8 +153,8 @@ write_csv(four_col_df, "transcript_fourcols.csv")
 # only keep the keys you’ll join on (plus any small lookup fields you need)
 join_keys_df <- four_col_df %>%
   select(
-    file_id,
-    row_id
+    row_id,
+    speech
   )
 
 # write it out
@@ -193,5 +195,6 @@ write_csv(batch1, "batch1.csv")
 write_csv(batch2, "batch2.csv")
 
 
+sum(batch2$speaker_std == "BACKGROUND")
 
 
