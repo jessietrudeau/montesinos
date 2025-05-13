@@ -128,7 +128,7 @@ print(head(combined_df))
 
 
 
-transcript_notes_df<-read_tsv("data/Copy of inventory - Transcript inventory.tsv")
+transcript_notes_df<-read_csv("data/Transcript inventory.csv")
 
 
 
@@ -194,8 +194,8 @@ batch2 <- combined_df %>%
   slice((min(20000, N) + 1):N)
 
 # (optional) write them out
-write_csv(batch1, "batch1.csv")
-write_csv(batch2, "batch2.csv")
+write_csv(batch1, "data/babel_batches/batch1.csv")
+write_csv(batch2, "data/babel_batches/batch2.csv")
 
 
 sum(batch2$speaker_std == "BACKGROUND")
@@ -231,7 +231,7 @@ library(tidyr)
 library(stringr)
 
 # 1) Load & reshape your inventory of topics
-inventory <- read_tsv("data/Copy of inventory - Transcript inventory.tsv", col_types = cols())
+inventory <- read_csv("data/Transcript inventory.csv", col_types = cols())
 
 # pivot longer so each topic flag becomes a row, then collapse back into a
 # comma-separated 'topics' string per transcript n
@@ -281,13 +281,15 @@ combined_df <- bind_rows(all_data) %>%
   select(id, everything()) %>%
   rename(text = speech)
 
-write_csv(combined_df, "all_transcripts_cleaned_with_topics.csv")
+write_csv(combined_df, "data/babel_df.csv")
 
 # Preview
 print(head(combined_df))
 
 
 unique(combined_df$topics)
+
+unique(combined_df$file_id)
 
 sum(is.na(combined_df$topics))
 
@@ -328,7 +330,6 @@ library(dplyr)
 
 # Sort missing_topics_ids by file_id in descending order
 missing_topics_ids %>%
-  arrange(file_id) %>%
-  print(n = 28)
+  arrange(file_id)  
 
 
