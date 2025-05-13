@@ -128,6 +128,9 @@ print(head(combined_df))
 
 
 
+transcript_notes_df<-read_tsv("data/Copy of inventory - Transcript inventory.tsv")
+
+
 
 
 
@@ -196,5 +199,136 @@ write_csv(batch2, "batch2.csv")
 
 
 sum(batch2$speaker_std == "BACKGROUND")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(dplyr)
+library(readr)
+library(tools)
+library(tidyr)
+library(stringr)
+
+# 1) Load & reshape your inventory of topics
+inventory <- read_tsv("data/Copy of inventory - Transcript inventory.tsv", col_types = cols())
+
+# pivot longer so each topic flag becomes a row, then collapse back into a
+# comma-separated 'topics' string per transcript n
+topics_lookup <- inventory %>%
+  pivot_longer(
+    cols = starts_with("topic_"),
+    names_to  = "topic",
+    values_to = "flag"
+  ) %>%
+  filter(!is.na(flag) & flag != 0) %>%      # keep only flagged topics
+  mutate(topic = str_remove(topic, "^topic_")) %>%
+  group_by(n) %>%
+  summarize(
+    topics = paste(topic, collapse = ", "),
+    .groups = "drop"
+  )
+
+# Read all your per-transcript files and tag them with file_id
+data_dir <- "data/modified_data/finalized_data"
+all_files <- list.files(data_dir, pattern = "\\.(csv|tsv)$", full.names = TRUE)
+
+all_data <- list()
+for (file_path in all_files) {
+  file_name <- file_path_sans_ext(basename(file_path))
+  
+  df <- tryCatch(
+    read_delim(file_path, delim = ifelse(grepl("\\.tsv$", file_path), "\t", ","), show_col_types = FALSE) %>%
+      filter(is.na(speaker_std) | speaker_std != "BACKGROUND") %>%
+      select(-any_of("speaker")) %>%
+      mutate(
+        file_id = as.integer(file_name)       # ensure numeric for join
+      ) %>%
+      # join in the topics for this file_id
+      left_join(topics_lookup, by = c("file_id" = "n")),
+    error = function(e) {
+      message("Skipping ", file_name, ": ", e$message)
+      NULL
+    }
+  )
+  
+  if (!is.null(df)) all_data[[length(all_data) + 1]] <- df
+}
+
+# 4) bind, add row id, rename and write out
+combined_df <- bind_rows(all_data) %>%
+  mutate(id = row_number()) %>%
+  select(id, everything()) %>%
+  rename(text = speech)
+
+write_csv(combined_df, "all_transcripts_cleaned_with_topics.csv")
+
+# Preview
+print(head(combined_df))
+
+
+unique(combined_df$topics)
+
+sum(is.na(combined_df$topics))
+
+
+
+
+write_csv(transcript_notes_df, "test.csv")
+
+
+
+
+
+
+
+
+
+
+
+no_topic_count <- inventory %>%
+  filter(if_all(starts_with("topic_"), ~ is.na(.))) %>%
+  tally()
+
+print(no_topic_count)
+
+
+
+missing_topics_ids <- combined_df %>%
+  filter(is.na(topics) | topics == "") %>%   # catch NA or empty-string
+  distinct(file_id)
+
+print(arrange(desc(missing_topics_ids$file_id)))
+
+order(missing_topics_ids)
+
+
+
+library(dplyr)
+
+# Sort missing_topics_ids by file_id in descending order
+missing_topics_ids %>%
+  arrange(file_id) %>%
+  print(n = 28)
 
 
