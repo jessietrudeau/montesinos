@@ -1,0 +1,67 @@
+---
+title: "STM Topic Prevalence Regression"
+output: html_document
+---
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(stm)
+library(tidyverse)
+```
+
+
+```{r}
+
+stm_input <- convert(dfm_general, to = "stm")  
+docs  <- stm_input$documents  
+vocab <- stm_input$vocab  
+meta  <- stm_input$meta
+
+```
+
+
+
+```{r}
+meta$type <- factor(meta$type)  
+meta$year <- year(as.Date(meta$date))
+```
+
+
+```{r}
+set.seed(123)
+K <- 20   # choose number of topics
+stm_model <- stm(
+  documents   = docs,
+  vocab       = vocab,
+  K           = K,
+  prevalence  = ~ type + s(year),
+  data        = meta,
+  init.type   = "Spectral",
+  max.em.its  = 75
+)
+```
+
+
+```{r}
+effect_type <- estimateEffect(
+  formula    = 1:K ~ type,
+  stmobj     = stm_model,
+  metadata   = meta,
+  uncertainty= "Global"
+)
+summary(effect_type)
+```
+
+
+```{r}
+effect_year <- estimateEffect(
+  formula    = 1:K ~ year,
+  stmobj     = stm_model,
+  metadata   = meta,
+  uncertainty= "Global"
+)
+summary(effect_year)
+```
+
+

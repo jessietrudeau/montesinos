@@ -572,8 +572,8 @@ library(lubridate)
 library(stringr)  # For counting speakers
 
 # Read the TSV file
-file_path <- "data/Copy of inventory - Transcript inventory.tsv"
-data <- read_tsv(file_path)
+file_path <- "data/Transcript inventory.csv"
+data <- read_csv(file_path)
 
 # Convert 'date' column to Date format and filter out dates before 1990
 data <- data %>%

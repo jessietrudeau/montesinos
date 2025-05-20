@@ -1,15 +1,11 @@
 Type_Merged,total_visits,unique_speakers
-Ally,3,1
-Businessperson,9,3
+Bureaucrat,19,6
+Businessperson,10,4
 Congress,9,4
 Foreign,9,4
-Front man,1,1
-Government,15,4
-"Government, Judiciary",1,1
 Inner Circle,114,29
-Media,23,5
-Military or Police,35,10
-"Military or Police, Government",3,1
-Security,88,1
+Media,31,6
+Secuirty,10,4
+Security,116,8
 Security rival,2,1
-NA,234,54
+NA,226,53
