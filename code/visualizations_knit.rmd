@@ -24,8 +24,8 @@ library(tidyr)
 library(stringr)
 
 # Step 1: Read the inventory file
-file <- "../data/Copy of inventory - Transcript inventory.tsv"
-inventory <- read_tsv(file)
+file <- "../data/Transcript inventory.csv"
+inventory <- read_csv(file)
 
 # Step 2: Identify topic columns
 topic_columns <- inventory %>%
@@ -332,11 +332,11 @@ library(stringr)
 library(ggplot2)
 
 # Define file paths
-inventory_file <- "../data/Copy of inventory - Transcript inventory.tsv"
+inventory_file <- "../data/Transcript inventory.csv"
 directory_path <- "../data/modified_data/finalized_data"
 
 # Read the inventory data
-inventory_data <- read_tsv(inventory_file, col_types = cols())
+inventory_data <- read_csv(inventory_file, col_types = cols())
 
 # List of topic columns
 topic_columns <- c("topic_referendum", "topic_ecuador", "topic_lucchetti_factory", "topic_municipal98", 
@@ -572,8 +572,8 @@ library(lubridate)
 library(stringr)  # For counting speakers
 
 # Read the TSV file
-file_path <- "../data/Copy of inventory - Transcript inventory.tsv"
-data <- read_tsv(file_path)
+file_path <- "../data/Transcript inventory.csv"
+data <- read_csv(file_path)
 
 # Convert 'date' column to Date format and filter out dates before 1990
 data <- data %>%
@@ -616,8 +616,8 @@ ggplot(long_data, aes(x = date, y = topic, color = num_speakers)) +
 # Summary Table
 ```{r}
 # Create a summary table counting occurrences of each unique value in "Type_Merged"
-file <- "../data/Copy of Master - transcript notes - Actors.tsv"
-df <- read_tsv(file)
+file <- "../data/Actors.csv"
+df <- read_csv(file)
 
 
 #Verify column names
@@ -661,7 +661,7 @@ library(dplyr)
 
 # 1. Read and clean names as before
 # read
-df <- readr::read_tsv("../data/Copy of Master - transcript notes - Actors.tsv")
+df <- readr::read_csv("../data/Actors.csv")
 
 # clean column names
 colnames(df) <- gsub(" ", "_", colnames(df))
@@ -795,10 +795,10 @@ write_csv(visit_summary, "../data/visit_summary_by_type.csv")
 
 # Load the summarized visit data
 visit_summary <- read_csv("../data/visit_summary_by_type.csv", col_types = cols())
-visit_summary <- visit_summary %>% filter(!is.na(Type_Merged))
+visit_summary <- visit_summary %>% filter(!is.na(Type))
 
 # Create a bar plot to visualize the total visits for each type
-ggplot(visit_summary, aes(x = reorder(Type_Merged, -total_visits), y = total_visits, fill = Type_Merged)) +
+ggplot(visit_summary, aes(x = reorder(Type, -total_visits), y = total_visits, fill = Type)) +
   geom_bar(stat = "identity", show.legend = FALSE) +  # Bar plot with total_visits as height
   labs(title = "Total Visits by Type", 
        x = "Type of Individual", 
@@ -807,32 +807,32 @@ ggplot(visit_summary, aes(x = reorder(Type_Merged, -total_visits), y = total_vis
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
 
 # Create a new column categorizing Inner Circle vs. Outer Circle
-visit_summary <- visit_summary %>%
-  filter(!is.na(Type_Merged)) %>%
-  mutate(circle_group = ifelse(Type_Merged == "Inner Circle", "Inner Circle", "Outer Circle"))
+#visit_summary <- visit_summary %>%
+ # filter(!is.na(Type_Merged)) %>%
+  # mutate(circle_group = ifelse(Type_Merged == "Inner Circle", "Inner Circle", "Outer Circle"))
 
 # Summarize total visits for each category
-circle_summary <- visit_summary %>%
-  group_by(circle_group) %>%
-  summarize(total_visits = sum(total_visits, na.rm = TRUE), .groups = "drop")
+#circle_summary <- visit_summary %>%
+ # group_by(circle_group) %>%
+  #summarize(total_visits = sum(total_visits, na.rm = TRUE), .groups = "drop")
 
 # Create a bar plot to compare Inner Circle vs. Outer Circle
-ggplot(circle_summary, aes(x = circle_group, y = total_visits, fill = circle_group)) +
-  geom_bar(stat = "identity", show.legend = FALSE) +  
-  labs(title = "Comparison of Visits: Inner Circle vs. Outer Circle", 
-       x = "Group", 
-       y = "Total Visits") +
-  theme_minimal() +
-  scale_fill_manual(values = c("Inner Circle" = "red", "Outer Circle" = "blue"))  # Custom colors
+#ggplot(circle_summary, aes(x = circle_group, y = total_visits, fill = circle_group)) +
+ # geom_bar(stat = "identity", show.legend = FALSE) +  
+  #labs(title = "Comparison of Visits: Inner Circle vs. Outer Circle", 
+   #    x = "Group", 
+    #   y = "Total Visits") +
+  #theme_minimal() +
+  #scale_fill_manual(values = c("Inner Circle" = "red", "Outer Circle" = "blue"))  # Custom colors
 ```
 
 
 ```{r}
 # 1) Read & clean actors data
-actors_in  <- "../data/Copy of Master - transcript notes - Actors.tsv"
+actors_in  <- "../data/Actors.csv"
 actors_out <- "../data/transcript_notes_cleaned.tsv"
 
-actors_data <- read_tsv(actors_in, col_types = cols()) %>%
+actors_data <- read_csv(actors_in, col_types = cols()) %>%
   # normalize colnames
   rename_with(~ str_replace_all(.x, " ", "_")) %>%
   rename_with(~ str_replace_all(.x, "'", "")) %>%
