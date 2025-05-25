@@ -6,62 +6,671 @@ output: html_document
 
 ```{r}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 20 Topics
+```{r}
+library(quanteda)
 library(stm)
-library(tidyverse)
-```
 
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$type <- as.factor(stm_input$meta$type)
 
-```{r}
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$type)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
 
-stm_input <- convert(dfm_general, to = "stm")  
-docs  <- stm_input$documents  
-vocab <- stm_input$vocab  
-meta  <- stm_input$meta
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
 
-```
-
-
-
-```{r}
-meta$type <- factor(meta$type)  
-meta$year <- year(as.Date(meta$date))
-```
-
-
-```{r}
+# 4. Fit your intercept‐only STM on the clean subset
 set.seed(123)
-K <- 20   # choose number of topics
-stm_model <- stm(
-  documents   = docs,
-  vocab       = vocab,
-  K           = K,
-  prevalence  = ~ type + s(year),
-  data        = meta,
-  init.type   = "Spectral",
-  max.em.its  = 75
+stm_filt <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 20,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
+```
+
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2 <- estimateEffect(
+  1:20 ~ type,
+  stmobj      = stm_filt,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2)
+plot(effect_type2, covariate = "type", topics = 1, model = stm_filt,
+     main = "Topic 1 Prevalence by Actor Type")
+```
+
+
+
+```{r}
+saveRDS(stm_base, file = "../stm_1.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 10 Topics
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$type <- as.factor(stm_input$meta$type)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$type)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+stm_filt_2 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 10,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
+```
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2_2 <- estimateEffect(
+  1:10 ~ type,
+  stmobj      = stm_filt_2,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_2)
+plot(effect_type2_2, covariate = "type", topics = 1, model = stm_filt_2,
+     main = "Topic 1 Prevalence by Actor Type")
+```
+
+```{r}
+saveRDS(stm_filt_2, file = "../stm_2.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 5 Topics
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$type <- as.factor(stm_input$meta$type)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$type)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+stm_filt_3 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 5,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
+```
+
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2_3 <- estimateEffect(
+  1:5 ~ type,
+  stmobj      = stm_filt_3,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_3)
+plot(effect_type2_3, covariate = "type", topics = 1, model = stm_filt_3,
+     main = "Topic 1 Prevalence by Actor Type")
+```
+
+
+```{r}
+saveRDS(stm_filt_3, file = "../stm_3.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 0 Topics
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$type <- as.factor(stm_input$meta$type)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$type)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+stm_filt_4 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 0,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
+```
+
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2_4 <- estimateEffect(
+  1:K ~ type,
+  stmobj      = stm_filt_4,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_4)
+plot(effect_type2_4, covariate = "type", topics = 1, model = stm_filt_4,
+     main = "Topic 1 Prevalence by Actor Type")
+```
+
+
+```{r}
+saveRDS(stm_filt_4, file = "../stm_4.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+head(processed2$meta$date, 10)
+
+```
+
+
+```{r}
+processed2$meta$date <- as.Date(
+  processed2$meta$date,
+  format = "%m/%d/%Y"
+)
+
+# Verify it worked
+class(processed2$meta$date)   # should be "Date"
+summary(processed2$meta$date)
+
+```
+
+
+```{r}
+processed2$meta$date_num <- as.numeric(processed2$meta$date)
+
+```
+
+
+```{r}
+# Fit STM with both covariates
+stm_both <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,
+  K          = 20,
+  prevalence = ~ type + s(date_num),
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
+# Estimate effects
+effect_both <- estimateEffect(
+  1:20 ~ type + date_num,
+  stmobj      = stm_both,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
 )
 ```
 
 
 ```{r}
-effect_type <- estimateEffect(
-  formula    = 1:K ~ type,
-  stmobj     = stm_model,
-  metadata   = meta,
-  uncertainty= "Global"
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# 1. Extract the per‐document topic proportions (θ) and name the columns
+theta_df <- as.data.frame(stm_both$theta)
+colnames(theta_df) <- paste0("Topic", seq_len(ncol(theta_df)))
+theta_df$doc_id <- rownames(theta_df)
+
+# 2. Prepare your metadata with matching doc_ids
+meta_df <- processed2$meta %>%
+  mutate(doc_id = rownames(.)) %>%
+  select(doc_id, date, type)  # keep only the fields you need
+
+# 3. Join topic proportions to metadata
+df_joined <- left_join(meta_df, theta_df, by = "doc_id")
+
+# 4. Pivot to long form for the topics you care about
+topics_of_interest <- paste0("Topic", c(1, 2,  10))
+plot_df <- df_joined %>%
+  select(doc_id, date, type, all_of(topics_of_interest)) %>%
+  pivot_longer(
+    cols      = all_of(topics_of_interest),
+    names_to  = "topic",
+    values_to = "prevalence"
+  )
+
+# 5. Plot: one smooth line per type, faceted by topic
+ggplot(plot_df, aes(x = date, y = prevalence, color = type)) +
+  geom_smooth(method = "loess", se = FALSE) +
+  facet_wrap(~ topic, ncol = 1, scales = "free_y") +
+  scale_x_date(
+    date_breaks = "1 month",
+    date_labels = "%b %Y"
+  ) +
+  labs(
+    title = "Topic Prevalence Over Time by Actor Type",
+    x     = "Date",
+    y     = "Estimated Topic Prevalence",
+    color = "Actor Type"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x     = element_text(angle = 90, vjust = 0.5, size = 8),
+    legend.position = "bottom"
+  )
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Date Regressions
+
+
+
+
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
 )
-summary(effect_type)
+stm_input$meta$date <- as.factor(stm_input$meta$date)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$date)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+date_stm <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 20,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+
 ```
 
 
 ```{r}
-effect_year <- estimateEffect(
-  formula    = 1:K ~ year,
-  stmobj     = stm_model,
-  metadata   = meta,
-  uncertainty= "Global"
+# 5. Finally, regress topic proportions on type
+effect_type2 <- estimateEffect(
+  1:20 ~ date,
+  stmobj      = date_stm,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
 )
-summary(effect_year)
+
+
+# Inspect
+summary(effect_type2)
+plot(effect_type2, covariate = "date", topics = 1, model = date_stm,
+     main = "Topic 1 Prevalence by Date")
+
 ```
+
+
+```{r}
+saveRDS(date_stm, file = "../date_stm.rds")
+```
+
+
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$date <- as.factor(stm_input$meta$date)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$date)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+date_stm_2 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 10,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+```
+
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2_2 <- estimateEffect(
+  1:10 ~ date,
+  stmobj      = date_stm_2,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_2)
+plot(effect_type2_2, covariate = "date", topics = 1, model = date_stm_2,
+     main = "Topic 1 Prevalence by Date")
+```
+
+
+```{r}
+saveRDS(date_stm_2, file = "../date_stm_2.rds")
+```
+
+
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$date <- as.factor(stm_input$meta$date)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$date)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+date_stm_3 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 5,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+```
+
+
+```{r}
+# 5. Finally, regress topic proportions on type
+effect_type2_3 <- estimateEffect(
+  1:5 ~ date,
+  stmobj      = date_stm_3,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_3)
+plot(effect_type2_3, covariate = "date", topics = 1, model = date_stm_3,
+     main = "Topic 1 Prevalence by Date")
+```
+
+
+```{r}
+saveRDS(date_stm_3, file = "../date_stm_3.rds")
+```
+
+
+```{r}
+library(quanteda)
+library(stm)
+
+# 1. Convert dfm → STM inputs (with ALL docs & metadata)
+stm_input <- convert(
+  x       = dfm_general,
+  to      = "stm",
+  docvars = docvars(dfm_general)
+)
+stm_input$meta$date <- as.factor(stm_input$meta$date)
+
+# 2. Subset *before* prepping: drop any docs with NA type
+keep <- !is.na(stm_input$meta$date)
+docs2 <- stm_input$documents[keep]
+meta2 <- stm_input$meta[keep, , drop = FALSE]
+
+# 3. Now prep these docs & vocab together
+processed2 <- prepDocuments(
+  documents = docs2,
+  vocab     = stm_input$vocab,   # original vocab
+  meta      = meta2
+)
+
+
+# 4. Fit your intercept‐only STM on the clean subset
+set.seed(123)
+date_stm_4 <- stm(
+  documents  = processed2$documents,
+  vocab      = processed2$vocab,       # remapped, gap‐free
+  K          = 0,
+  prevalence = ~ 1,
+  data       = processed2$meta,
+  max.em.its = 75
+)
+```
+
+
+```{r}
+K <- length(date_stm_4$mu)
+
+# 5. Finally, regress topic proportions on type
+effect_type2_4 <- estimateEffect(
+  1:K ~ date,
+  stmobj      = date_stm_4,
+  metadata    = processed2$meta,
+  uncertainty = "Global"
+)
+
+
+# Inspect
+summary(effect_type2_4)
+plot(effect_type2_4, covariate = "date", topics = 1, model = date_stm_4,
+     main = "Topic 1 Prevalence by Date")
+```
+
+
+```{r}
+saveRDS(date_stm_4, file = "../date_stm_4.rds")
+```
+
 
 
