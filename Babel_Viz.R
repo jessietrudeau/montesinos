@@ -5,12 +5,8 @@ library(dplyr)
 res<-"data/babel_batches/results_1.csv"
 soft<-"data/babel_batches/softmax_1.csv"
 
-
 results<-read.csv(res)
 softmax<-read.csv(soft)
-
-str(softmax)
-str(results)
 
 merged_df<-full_join(results, softmax, by = "sentence_id")
 
@@ -25,6 +21,7 @@ merged_df_2<-full_join(results_2, softmax_2, by = "sentence_id")
 # Merge the two joined datasets into one
 combined_df <- bind_rows(merged_df, merged_df_2)
 
+write_csv(combined_df, "data/babel_batches/combined_df.csv")
 
 #---------------------------------Overall Trends-------------------------------------
 
