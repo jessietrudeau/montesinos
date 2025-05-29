@@ -122,7 +122,7 @@ ggplot(emotion_subset, aes(x = normalized_position, y = mean_prob, color = emoti
   scale_color_brewer(palette = "Dark2")
 
 
-#----------------------------By Topic----------------------------
+#-------------------------Probability Per Topic-------------------------
 
 
 # Load required libraries
