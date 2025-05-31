@@ -722,109 +722,7 @@ ggplot(inner_df, aes(x = Type)) +
 ```
 
 
-# Histograms (Vists by type & Inner Circle V Outer Circle)
-```{r}
-# Load required libraries
-install.packages("tidyverse")
-library(tidyverse)
 
-# Set the directory where transcript files are stored
-transcript_dir <- "../data/modified_data/finalized_data"
-
-# Get list of all CSV and TSV files
-transcript_files <- list.files(path = transcript_dir, pattern = "\\.(csv|tsv)$", full.names = TRUE)
-
-# Function to detect delimiter and read file correctly
-read_transcript_file <- function(file_path) {
-  if (grepl("\\.csv$", file_path)) {
-    return(read_csv(file_path, col_types = cols()))
-  } else if (grepl("\\.tsv$", file_path)) {
-    return(read_tsv(file_path, col_types = cols()))
-  } else {
-    return(NULL)  # In case of an unexpected format
-  }
-}
-
-# Initialize an empty dataframe to store speaker visits
-speaker_visits <- tibble(speaker_std = character(), file_name = character())
-
-# Loop through each transcript file and extract unique speaker_std values
-for (file in transcript_files) {
-  # Read file using the appropriate function
-  df <- read_transcript_file(file)
-  
-  # Check if 'speaker_std' column exists in the file
-  if (!is.null(df) && "speaker_std" %in% colnames(df)) {
-    # Store unique speakers per file
-    unique_speakers <- df %>%
-      select(speaker_std) %>%
-      distinct() %>%
-      mutate(file_name = basename(file))
-    
-    # Append to the master visits dataframe
-    speaker_visits <- bind_rows(speaker_visits, unique_speakers)
-  }
-}
-
-# Count unique appearances per speaker (number of transcript files they appear in)
-speaker_counts <- speaker_visits %>%
-  group_by(speaker_std) %>%
-  summarize(visits = n(), .groups = "drop")
-
-# Load the master actors dataset
-actors_file <- "../data/transcript_notes_cleaned.tsv"
-actors_data <- read_csv(actors_file, col_types = cols())
-
-# Clean column names to match modifications
-colnames(actors_data) <- colnames(actors_data) %>% str_replace_all(" ", "_") %>% str_replace_all("'", "")
-
-# Merge visits data with actor classifications
-merged_data <- speaker_counts %>%
-  left_join(actors_data %>% select(speaker_std, Type_Merged), by = "speaker_std")
-
-# Count total visits by actor classification
-visit_summary <- merged_data %>%
-  group_by(Type_Merged) %>%
-  summarize(total_visits = sum(visits, na.rm = TRUE), unique_speakers = n(), .groups = "drop")
-
-# Display results
-print(visit_summary)
-
-# Optionally, save to CSV
-write_csv(visit_summary, "../data/visit_summary_by_type.csv")
-
-# Load the summarized visit data
-visit_summary <- read_csv("../data/visit_summary_by_type.csv", col_types = cols())
-visit_summary <- visit_summary %>% filter(!is.na(Type))
-
-# Create a bar plot to visualize the total visits for each type
-ggplot(visit_summary, aes(x = reorder(Type, -total_visits), y = total_visits, fill = Type)) +
-  geom_bar(stat = "identity", show.legend = FALSE) +  # Bar plot with total_visits as height
-  labs(title = "Total Visits by Type", 
-       x = "Type of Individual", 
-       y = "Total Visits") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
-
-# Create a new column categorizing Inner Circle vs. Outer Circle
-#visit_summary <- visit_summary %>%
- # filter(!is.na(Type_Merged)) %>%
-  # mutate(circle_group = ifelse(Type_Merged == "Inner Circle", "Inner Circle", "Outer Circle"))
-
-# Summarize total visits for each category
-#circle_summary <- visit_summary %>%
- # group_by(circle_group) %>%
-  #summarize(total_visits = sum(total_visits, na.rm = TRUE), .groups = "drop")
-
-# Create a bar plot to compare Inner Circle vs. Outer Circle
-#ggplot(circle_summary, aes(x = circle_group, y = total_visits, fill = circle_group)) +
- # geom_bar(stat = "identity", show.legend = FALSE) +  
-  #labs(title = "Comparison of Visits: Inner Circle vs. Outer Circle", 
-   #    x = "Group", 
-    #   y = "Total Visits") +
-  #theme_minimal() +
-  #scale_fill_manual(values = c("Inner Circle" = "red", "Outer Circle" = "blue"))  # Custom colors
-```
 
 
 ```{r}
@@ -924,6 +822,79 @@ ggplot(visit_summary, aes(x = Type, y = total_visits, fill = status)) +
 ```
 
 
+#Visits By Type
+```{r}
+library(tidyverse)
+library(readr)
+library(stringr)
+
+# Load Actors.csv
+actors <- read_csv("../data/Actors.csv") %>%
+  select(speaker_std, Type)
+
+# Define transcript directory
+transcript_dir <- "../data/modified_data/finalized_data"
+transcript_files <- list.files(transcript_dir, pattern = "\\.(csv|tsv)$", full.names = TRUE)
+
+# Function to read transcript
+read_transcript <- function(fp) {
+  if (str_detect(fp, "\\.csv$")) read_csv(fp, col_types = cols()) else read_tsv(fp, col_types = cols())
+}
+
+# Count unique speaker_std appearances across files
+speaker_visits <- map_df(transcript_files, ~ {
+  df <- read_transcript(.x)
+  if ("speaker_std" %in% names(df)) {
+    df %>% select(speaker_std) %>% distinct() %>%
+      mutate(file = basename(.x))
+  } else {
+    tibble()
+  }
+})
+
+# Count visits per speaker_std
+speaker_counts <- speaker_visits %>%
+  count(speaker_std, name = "visits")
+
+# Join with Actors to get Type
+type_visits <- speaker_counts %>%
+  left_join(actors, by = "speaker_std") %>%
+  filter(!is.na(Type)) %>%
+  group_by(Type) %>%
+  summarise(total_visits = sum(visits), .groups = "drop")
+
+# Plot
+ggplot(type_visits, aes(x = fct_reorder(Type, total_visits), y = total_visits)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Total Visits by Type",
+    x = "Type",
+    y = "Total Visits"
+  ) +
+  theme_minimal()
+
+actors <- read_csv("../data/Actors.csv")
+
+# Count unique individuals per Type
+type_counts <- actors %>%
+  filter(!is.na(Type), !is.na(speaker_std)) %>%
+  distinct(speaker_std, Type) %>%
+  count(Type, name = "num_individuals")
+
+# Plot
+ggplot(type_counts, aes(x = fct_reorder(Type, num_individuals), y = num_individuals)) +
+  geom_col(fill = "darkgreen") +
+  coord_flip() +
+  labs(
+    title = "Number of Individuals per Type",
+    x = "Type",
+    y = "Number of Unique Individuals"
+  ) +
+  theme_minimal()
+
+
+```
 
 
 
