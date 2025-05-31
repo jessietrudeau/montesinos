@@ -9,10 +9,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# 20 Topics
 ```{r}
+library(ggplot2)
+library(tibble)
+library(dplyr)
 library(quanteda)
 library(stm)
+library(tidyr)
+```
+
+
+
+# 20 Topics
+```{r}
 
 # 1. Convert dfm → STM inputs (with ALL docs & metadata)
 stm_input <- convert(
@@ -84,8 +93,6 @@ saveRDS(stm_base, file = "../stm_1.rds")
 
 # 10 Topics
 ```{r}
-library(quanteda)
-library(stm)
 
 # 1. Convert dfm → STM inputs (with ALL docs & metadata)
 stm_input <- convert(
@@ -157,8 +164,6 @@ saveRDS(stm_filt_2, file = "../stm_2.rds")
 
 # 5 Topics
 ```{r}
-library(quanteda)
-library(stm)
 
 # 1. Convert dfm → STM inputs (with ALL docs & metadata)
 stm_input <- convert(
@@ -212,6 +217,36 @@ plot(effect_type2_3, covariate = "type", topics = 1, model = stm_filt_3,
 
 
 ```{r}
+colnames(topic1_df)
+```
+
+
+```{r}
+
+# Extract STM regression summary for topic 1
+topic1_df <- as.data.frame(summary(effect_type2_3, topics = 1)$tables[[1]])
+topic1_df$Type <- rownames(topic1_df)
+
+#Convert and prep
+topic1_df <- topic1_df %>%
+  as_tibble() %>%
+  mutate(Type = factor(Type, levels = rev(Type)))  # reverse for top-down ordering
+
+# Plot without error bars
+ggplot(topic1_df, aes(x = Estimate, y = Type)) +
+  geom_point(size = 3) +
+  labs(
+    title = "Topic 1 Prevalence by Actor Type",
+    x = "Estimated Topic Proportion",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+
+
+```{r}
 saveRDS(stm_filt_3, file = "../stm_3.rds")
 ```
 
@@ -233,8 +268,6 @@ saveRDS(stm_filt_3, file = "../stm_3.rds")
 
 # 0 Topics
 ```{r}
-library(quanteda)
-library(stm)
 
 # 1. Convert dfm → STM inputs (with ALL docs & metadata)
 stm_input <- convert(
@@ -271,6 +304,10 @@ stm_filt_4 <- stm(
 
 
 ```{r}
+
+file<-"../stm_4.rds"
+stm_filt_4<-readRDS(file)
+
 # 5. Finally, regress topic proportions on type
 effect_type2_4 <- estimateEffect(
   1:K ~ type,
@@ -359,9 +396,6 @@ effect_both <- estimateEffect(
 
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
 
 # 1. Extract the per‐document topic proportions (θ) and name the columns
 theta_df <- as.data.frame(stm_both$theta)
