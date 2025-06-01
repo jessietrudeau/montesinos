@@ -4,6 +4,7 @@ library(dplyr)
 library(quanteda)
 library(stm)
 library(tidyr)
+library(lubridate)
 
 
 dfm_general<-readRDS("../dfm_general.rds")
@@ -212,10 +213,18 @@ stm_input <- convert(
   to      = "stm",
   docvars = docvars(dfm_general)
 )
-stm_input$meta$date <- as.factor(stm_input$meta$date)
 
-# Subset *before* prepping: drop any docs with NA type
-keep <- !is.na(stm_input$meta$date)
+# Try multiple possible formats for safety
+stm_input$meta$date <- parse_date_time(
+  stm_input$meta$date,
+  orders = c("Ymd", "mdY", "dmY", "Y-m-d", "m/d/Y", "d/m/Y")
+)
+
+# Now extract the year
+stm_input$meta$year <- as.factor(year(stm_input$meta$date))
+
+# Subset *before* prepping: drop any docs with NA year
+keep <- !is.na(stm_input$meta$year)
 docs2 <- stm_input$documents[keep]
 meta2 <- stm_input$meta[keep, , drop = FALSE]
 
@@ -233,30 +242,53 @@ processed2 <- prepDocuments(
 
 ##-------------------------------20 Topics--------------------------------
 
-
 set.seed(123)
 date_stm <- stm(
   documents  = processed2$documents,
-  vocab      = processed2$vocab,       # remapped, gap‐free
+  vocab      = processed2$vocab,
   K          = 20,
-  prevalence = ~ 1,
+  prevalence = ~ year,  
   data       = processed2$meta,
   max.em.its = 75
 )
 
-# Regress topic proportions on type
+# Regress topic proportions on year
 effect_type2 <- estimateEffect(
-  1:20 ~ date,
+  1:20 ~ year,
   stmobj      = date_stm,
   metadata    = processed2$meta,
   uncertainty = "Global"
 )
 
-
 # Inspect
 summary(effect_type2)
-plot(effect_type2, covariate = "date", topics = 1, model = date_stm,
-     main = "Topic 1 Prevalence by Date")
+plot(effect_type2, covariate = "year", topics = 1, model = date_stm,
+     main = "Topic 1 Prevalence by Year")
+
+
+pdf("topic_plot(20_topics_by_year).pdf", width = 12, height = 10)
+
+# Loop over all 20 topics
+for (k in 1:20) {
+  plot(
+    effect_type2,
+    covariate = "year",
+    topics = k,
+    model = date_stm,
+    method = "pointestimate",
+    labeltype = "prob",
+    main = paste("Topic", k, "Prevalence by Year"),
+    xlab = "Year",
+    ylab = "Expected Topic Proportion"
+  )
+}
+
+dev.off()
+
+
+
+
+
 
 
 
