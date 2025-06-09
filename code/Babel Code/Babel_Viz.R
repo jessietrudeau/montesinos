@@ -172,12 +172,13 @@ ggplot(emotion_binned, aes(x = x, y = y, color = emotion)) +
       "Fear"         = "#e7298a",
       "Hope"         = "#66a61e",
       "Joy"          = "#e6ab02",
-      "None of Them" = "#a6761d",
+      "None Of Them" = "#a6761d",
       "Pride"        = "#666666",
       "Sadness"      = "#1f78b4"  
     )
   )
 
+unique(emotion_binned$emotion)
 
 
 
@@ -303,6 +304,10 @@ emotion_topic_binned <- emotion_topic_summary %>%
     .groups = "drop"
   )
 
+emotion_topic_binned <- emotion_topic_binned %>%
+  mutate(emotion = replace_na(emotion, "None of Them"))
+
+
 ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
   geom_line(size = 1) +
   facet_wrap(~ topics, scales = "free_y") +
@@ -340,6 +345,85 @@ ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
 sum(is.na(emotion_topic_binned$emotion))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(forcats)
+
+# Split concatenated topics into individual rows
+emotion_topic_split <- emotion_topic_summary %>%
+  mutate(topics = str_split(topics, ",")) %>%
+  unnest(topics) %>%
+  mutate(topics = str_trim(topics))  # Remove extra whitespace
+
+# Re-bin normalized position
+emotion_topic_binned_split <- emotion_topic_split %>%
+  mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
+  group_by(topics, bin, emotion) %>%
+  summarise(
+    x = mean(normalized_position),
+    y = mean(mean_prob),
+    .groups = "drop"
+  )%>%
+  filter(!is.na(emotion))  # Exclude NA emotions
+
+
+emotion_topic_binned_split <- emotion_topic_binned_split %>%
+  mutate(emotion = replace_na(emotion, "None of Them"))
+
+# Plot by individual (non-concatenated) topics
+ggplot(emotion_topic_binned_split, aes(x = x, y = y, color = emotion)) +
+  geom_line(size = 1) +
+  facet_wrap(~ topics, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Emotion Trends Across Individual Topics"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 8)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"
+    )
+  )
 
 
 

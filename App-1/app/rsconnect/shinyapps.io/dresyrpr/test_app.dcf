@@ -1,0 +1,12 @@
+name: test_app
+title: app
+username: dresyrpr
+account: dresyrpr
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14902250
+bundleId: 10420491
+url: https://dresyrpr.shinyapps.io/test_app/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
