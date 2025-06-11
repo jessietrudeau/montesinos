@@ -23,17 +23,25 @@ count_words <- function(text) {
 }
 
 # Preload inventory data for timeline tab
-inventory <- read_csv("../../data/Transcript inventory.csv", show_col_types = FALSE)
+inventory <- read_csv("../../data/Descriptions.csv", show_col_types = FALSE)
 inventory <- inventory %>%
   mutate(date = mdy(date)) %>%
   filter(!is.na(date) & date >= as.Date("1990-01-01")) %>%
   mutate(num_speakers = ifelse(is.na(speakers), 0, str_count(speakers, ",") + 1))
 topic_columns <- grep("^topic_", names(inventory), value = TRUE)
 long_data <- inventory %>%
-  select(n, date, speakers, num_speakers, all_of(topic_columns)) %>%
-  pivot_longer(cols = all_of(topic_columns), names_to = "topic", values_to = "present") %>%
-  filter(!is.na(present)) %>%
-  mutate(topic = gsub("topic_", "", topic))
+  pivot_longer(
+    cols = all_of(topic_columns),
+    names_to = "topic",
+    values_to = "present"
+  ) %>%
+  mutate(
+    present = str_trim(tolower(as.character(present))),
+    topic = gsub("topic_", "", topic)
+  ) %>%
+  filter(present %in% c("x", "1", "yes")) %>%
+  distinct(n, topic, .keep_all = TRUE)  # ensures one row per (n, topic)
+
 
 # --- UI ---
 ui <- fluidPage(
@@ -62,7 +70,7 @@ ui <- fluidPage(
              fluidRow(
                column(12, plotOutput("timelinePlot", click = "plot_click"))
              ),
-             verbatimTextOutput("popup")
+             uiOutput("popup")
     )
   )
 )
@@ -191,6 +199,8 @@ server <- function(input, output, session) {
     req(input$plot_click)
     click_date <- as.Date(input$plot_click$x)
     click_topic_index <- round(input$plot_click$y)
+    
+    # Find closest match based on date and topic
     nearest <- long_data %>%
       mutate(dist = abs(as.numeric(date - click_date))) %>%
       filter(topic == unique(topic)[click_topic_index]) %>%
@@ -198,23 +208,25 @@ server <- function(input, output, session) {
       slice(1)
     
     if (!is.na(nearest$n)) {
-      file_path_csv <- file.path(transcript_dir, paste0(nearest$n, ".csv"))
-      file_path_tsv <- file.path(transcript_dir, paste0(nearest$n, ".tsv"))
-      transcript <- tryCatch({
-        if (file.exists(file_path_csv)) read_csv(file_path_csv, show_col_types = FALSE)
-        else if (file.exists(file_path_tsv)) read_tsv(file_path_tsv, show_col_types = FALSE)
-        else NULL
-      }, error = function(e) NULL)
+      # Match description from inventory by `n`
+      desc <- inventory %>%
+        filter(n == nearest$n) %>%
+        pull(summary)
       
-      if (!is.null(transcript) && "speaker_std" %in% names(transcript)) {
-        speakers <- unique(na.omit(transcript$speaker_std))
-        output$popup <- renderPrint({
-          cat("speaker_std's in conversation", nearest$n, ":\n")
-          print(speakers)
-        })
-      } else {
-        output$popup <- renderPrint({ cat("No speaker_std data for file", nearest$n) })
-      }
+      output$popup <- renderUI({
+        desc <- inventory %>%
+          filter(n == nearest$n) %>%
+          pull(summary)
+        
+        if (length(desc) == 0 || is.na(desc)) {
+          HTML("<p><em>No description available for this conversation.</em></p>")
+        } else {
+          HTML(paste0("<div style='white-space: pre-wrap; max-width: 800px;'>",
+                      "<strong>Description for conversation ", nearest$n, ":</strong><br><br>",
+                      desc,
+                      "</div>"))
+        }
+      })
     }
   })
 }
