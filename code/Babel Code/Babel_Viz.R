@@ -108,37 +108,6 @@ all_files <- combined_df %>%
 emotion_subset <- emotion_summary %>%
   filter(file_id %in% all_files)
 
-# Step 4: Smoothed plot of all conversations
-ggplot(emotion_subset, aes(x = normalized_position, y = mean_prob, color = emotion)) +
-  geom_smooth(method = "loess", span = 0.25, se = FALSE, size = 1, 
-              method.args = list(family = "symmetric")) +
-  facet_wrap(~ file_id, scales = "free_y") +  # allow y-scale to vary across facets
-  coord_cartesian(ylim = c(0, 1)) +
-  labs(
-    x = "Normalized Position in Conversation",
-    y = "Emotion Probability",
-    title = "Smoothed Emotion Trends Across All Conversations"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    legend.position = "bottom",
-    strip.text = element_text(size = 7)
-  ) +
-  scale_color_brewer(palette = "Dark2")
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Bin data into e.g., 50 intervals
 emotion_binned <- emotion_subset %>%
   mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
@@ -178,7 +147,13 @@ ggplot(emotion_binned, aes(x = x, y = y, color = emotion)) +
     )
   )
 
-unique(emotion_binned$emotion)
+
+
+
+
+
+
+
 
 
 
@@ -191,6 +166,9 @@ unique(emotion_binned$emotion)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(stringr)
+library(forcats)
+library(patchwork)
 
 # Step 1: Normalize sentence position within each file
 merged_df <- combined_df %>%
@@ -252,48 +230,6 @@ emotion_topic_summary <- emotion_topic_summary %>%
     topics = forcats::fct_infreq(topics)          # Make topics a factor by frequency
   )
 
-# Step 5: Plot emotion trends by topic
-ggplot(emotion_topic_summary, aes(x = normalized_position, y = mean_prob, color = emotion)) +
-  geom_smooth(method = "loess", span = 0.3, se = FALSE, size = 1) +
-  facet_wrap(~ topics, scales = "free_y") +
-  coord_cartesian(ylim = c(0, 1)) +
-  labs(
-    x = "Normalized Position in Conversation",
-    y = "Emotion Probability",
-    title = "Emotion Trends Across All Topics"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    legend.position = "bottom",
-    strip.text = element_text(size = 8)
-  ) +
-  scale_color_manual(
-    values = c(
-      "Anger"        = "#1b9e77",
-      "Disgust"      = "#d95f02",
-      "Enthusiasm"   = "#7570b3",
-      "Fear"         = "#e7298a",
-      "Hope"         = "#66a61e",
-      "Joy"          = "#e6ab02",
-      "None Of Them" = "#a6761d",
-      "Pride"        = "#666666",
-      "Sadness"      = "#1f78b4"  
-    )
-  )
-
-
-
-
-
-
-
-unique(emotion_long$emotion)
-unique(emotion_binned$emotion)
-
-
-
-
 # Bin normalized position into 50 equally spaced intervals
 emotion_topic_binned <- emotion_topic_summary %>%
   mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
@@ -341,38 +277,6 @@ ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
 
 
 
-
-sum(is.na(emotion_topic_binned$emotion))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(stringr)
-library(forcats)
 
 # Split concatenated topics into individual rows
 emotion_topic_split <- emotion_topic_summary %>%
@@ -424,6 +328,125 @@ ggplot(emotion_topic_binned_split, aes(x = x, y = y, color = emotion)) +
       "Sadness"      = "#1f78b4"
     )
   )
+
+
+
+
+
+
+# Step 1: Split concatenated topics and unnest
+emotion_topic_expanded <- emotion_long %>%
+  mutate(topics = str_split(topics, ",")) %>%
+  unnest(topics) %>%
+  mutate(topics = str_trim(topics))  # Clean topic strings
+
+# Step 2: Bin normalized positions
+emotion_topic_binned <- emotion_topic_expanded %>%
+  mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
+  group_by(topics, bin, emotion) %>%
+  summarise(
+    x = mean(normalized_position),
+    y = mean(prob, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(emotion = replace_na(emotion, "None of Them"))
+
+# Step 3: Define color scale
+emotion_colors <- c(
+  "Anger"        = "#1b9e77",
+  "Disgust"      = "#d95f02",
+  "Enthusiasm"   = "#7570b3",
+  "Fear"         = "#e7298a",
+  "Hope"         = "#66a61e",
+  "Joy"          = "#e6ab02",
+  "None of Them" = "#a6761d",
+  "Pride"        = "#666666",
+  "Sadness"      = "#1f78b4"
+)
+
+# Step 4: Create one plot per topic
+plots <- emotion_topic_binned %>%
+  split(.$topics) %>%
+  lapply(function(df_topic) {
+    ggplot(df_topic, aes(x = x, y = y, color = emotion)) +
+      geom_line(size = 1) +
+      coord_cartesian(ylim = c(0, 1)) +
+      labs(
+        title = unique(df_topic$topics),
+        x = "Normalized Position in Conversation",
+        y = "Emotion Probability"
+      ) +
+      scale_color_manual(values = emotion_colors) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        strip.text = element_text(size = 8),
+        plot.title = element_text(size = 10, hjust = 0.5)
+      )
+  })
+
+# Step 5: Combine with patchwork
+library(patchwork)
+wrap_plots(plots, ncol = 3) +  # Adjust layout as needed
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
+  geom_smooth(method = "loess", span = 0.37, se = FALSE, size = 1) +  # Try different values: 0.2, 0.5, 0.8
+  facet_wrap(~ topics, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Smoothed Emotion Trends Across All Topics"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 8)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"
+    )
+  )
+
+
+
 
 
 
