@@ -113,15 +113,15 @@ server <- function(input, output, session) {
   # Step 5B: Custom color mapping for Types
   type_colors <- c(
     "Illicit"      = "#e41a1c",  # red
-    "Military"     = "#377eb8",  # blue
-    "Cleric"       = "#4daf4a",  # green
+    "Security"     = "#377eb8",  # blue
+    "Businessperson"       = "#4daf4a",  # green
     "Bureaucrat"   = "#984ea3",  # purple
-    "Intellectual" = "#ff7f00",  # orange
-    "Politician"   = "#ffff33",  # yellow
-    "Media"        = "#a65628",  # brown
-    "Merchant"     = "#f781bf",  # pink
+    "Congress" = "#ff7f00",  # orange
+    "Elected Official"   = "#ffff33",  # yellow
+    "Foreign"        = "#a65628",  # brown
+    "Judiciary"     = "#f781bf",  # pink
     "Foreign"      = "#999999",  # gray
-    "Other"        = "#66c2a5"   # teal
+    "Media"        = "#66c2a5"   # teal
   )
   
   nodes_speaker_st <- speaker_long %>%
