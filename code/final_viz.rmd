@@ -24,7 +24,7 @@ library(tidyr)
 library(stringr)
 
 # Step 1: Read the inventory file
-file <- "../data/Transcript inventory.csv"
+file <- "../data/Inventory.csv"
 inventory <- read_csv(file)
 
 # Step 2: Identify topic columns
@@ -332,7 +332,7 @@ library(stringr)
 library(ggplot2)
 
 # Define file paths
-inventory_file <- "../data/Transcript inventory.csv"
+inventory_file <- "../data/Inventory.csv"
 directory_path <- "../data/modified_data/finalized_data"
 
 # Read the inventory data
@@ -572,7 +572,7 @@ library(lubridate)
 library(stringr)  # For counting speakers
 
 # Read the TSV file
-file_path <- "../data/Transcript inventory.csv"
+file_path <- "../data/Inventory.csv"
 data <- read_csv(file_path)
 
 # Convert 'date' column to Date format and filter out dates before 1990
