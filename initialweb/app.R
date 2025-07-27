@@ -2,7 +2,6 @@
 
 
 
-
 # Load libraries
 library(shiny)
 library(tidyverse)
@@ -28,7 +27,7 @@ ui <- fluidPage(
 
 # Define Server
 server <- function(input, output, session) {
-  # Step 0: Build speaker frequency across all transcripts
+  # Step 0: Speaker frequency across all transcripts
   transcript_files <- dir_ls("../data/modified_data/finalized_data", regexp = "\\.(csv|tsv)$", recurse = TRUE)
   
   speaker_freq_all <- map_dfr(transcript_files, function(path) {
@@ -52,10 +51,10 @@ server <- function(input, output, session) {
     count(speaker_std, name = "conversation_count")
   
   # Step 1: Load Data
-  descriptions       <- read_csv("../data/Descriptions.csv")
-  speakers_df        <- read_csv("../data/speakers per transcript.csv")
-  topic_descriptions <- read_csv("../data/Topic Descriptions.csv")
-  actor_descriptions <- read_csv("../data/Actors.csv") %>%
+  descriptions       <- read_csv("../data/Updated Inventory & Descriptions/Descriptions.csv")
+  speakers_df        <- read_csv("../data/Updated Inventory & Descriptions/speakers per transcript.csv")
+  topic_descriptions <- read_csv("../data/Updated Inventory & Descriptions/Topic Descriptions.csv")
+  actor_descriptions <- read_csv("../data/Updated Inventory & Descriptions/Actors.csv") %>%
     mutate(Type = str_trim(Type),
            Type = str_to_title(Type),
            Type = case_when(
@@ -79,7 +78,7 @@ server <- function(input, output, session) {
     filter(!is.na(speaker), speaker != "") %>%
     mutate(n = as.character(n), speaker = str_trim(speaker))
   
-  # Step 4: Speaker ↔ Topic Edges with width based on frequency
+  # Step 4: Speaker ↔ Topic Edges with frequency-based width
   edges_speaker_topic <- speaker_long %>%
     inner_join(long_topics, by = "n") %>%
     mutate(speaker_std = str_to_lower(speaker)) %>%
@@ -87,6 +86,22 @@ server <- function(input, output, session) {
     left_join(speaker_frequency %>% mutate(speaker_std = str_to_lower(speaker_std)), by = "speaker_std") %>%
     transmute(from = speaker_std, to = topic, width = pmax(1, log1p(conversation_count)))
   
+  # Step 4B: Speaker Co-Appearance Edges (used as placeholder for shared transcripts)
+  speaker_pairs_topic_net <- speaker_long %>%
+    select(n, speaker) %>%
+    distinct() %>%
+    group_by(n) %>%
+    filter(n() > 1) %>%
+    summarise(pairs = list(combn(str_to_lower(speaker), 2, simplify = FALSE)), .groups = "drop") %>%
+    unnest(pairs) %>%
+    mutate(from = map_chr(pairs, 1), to = map_chr(pairs, 2)) %>%
+    select(from, to) %>%
+    filter(from != to)
+  
+  edges_placeholder <- speaker_pairs_topic_net %>%
+    group_by(from, to) %>%
+    summarise(weight = n(), .groups = "drop") %>%
+    mutate(color = "black", width = 1)
   
   # Step 5: Speaker Co-Appearance Edges
   speaker_pairs <- speaker_long %>%
@@ -129,11 +144,25 @@ server <- function(input, output, session) {
                        Type = str_trim(Type),
                        Position = coalesce(Position, "No info")),
               by = c("id_lower" = "speaker_std_lower")) %>%
-    mutate(group = "Speaker",
-           color = type_colors[Type],
-           color = ifelse(is.na(color), "#cccccc", color),
-           title = paste0("Speaker: ", id, "<br>Type: ", Type, "<br>Position: ", Position)) %>%
-    select(id, group, title, color) %>%
+    left_join(speaker_frequency %>% mutate(speaker_std = str_to_lower(speaker_std)),
+              by = c("id" = "speaker_std")) %>%
+    mutate(
+      group = "Speaker",
+      color = type_colors[Type],
+      color = ifelse(is.na(color), "#cccccc", color),
+      title = paste0(
+        "Speaker: ", id, "<br>Type: ", Type, "<br>Position: ", Position,
+        "<br>Transcripts: ", conversation_count
+      ),
+      value = case_when(
+        conversation_count > 80 ~ 140,
+        conversation_count > 60 ~ 100,
+        conversation_count > 40 ~ 80,
+        conversation_count > 20 ~ 60,
+        TRUE                    ~ 40
+      )
+    ) %>%
+    select(id, group, title, color, value) %>%
     distinct(id, .keep_all = TRUE)
   
   nodes_topic_st <- long_topics %>%
@@ -142,49 +171,21 @@ server <- function(input, output, session) {
                 rename(topic = topics, description = descriptions) %>%
                 mutate(topic = str_remove(topic, "^topic_")),
               by = c("id" = "topic")) %>%
-    mutate(group = "Topic", title = str_replace_all(description, "\n", "<br>")) %>%
-    select(id, group, title) %>%
+    mutate(
+      group = "Topic",
+      title = str_replace_all(description, "\n", "<br>"),
+      value = 300,
+      color = "maroon"
+    ) %>%
+    select(id, group, title, value, color) %>%
     distinct(id, .keep_all = TRUE)
   
   nodes_st <- bind_rows(nodes_speaker_st, nodes_topic_st)
   
-  # Step 8: Speaker Co-Appearance Nodes
-  node_degrees <- edges_speaker_co %>%
-    select(from, to) %>%
-    pivot_longer(cols = everything(), values_to = "id") %>%
-    count(id, name = "value")
-  
-  nodes_speaker_co <- node_degrees %>%
-    mutate(id = str_trim(id), id_lower = str_to_lower(id)) %>%
-    left_join(actor_descriptions %>%
-                mutate(speaker_std = str_trim(speaker_std),
-                       speaker_std_lower = str_to_lower(speaker_std),
-                       Position = coalesce(Position, "No info")),
-              by = c("id_lower" = "speaker_std_lower")) %>%
-    mutate(group = "Speaker",
-           title = paste0("Speaker: ", id, "<br>Position: ", Position),
-           color = "red") %>%
-    select(id, group, title, value, color) %>%
-    distinct(id, .keep_all = TRUE)
-  
-  # Step 9: Render Speaker-Topic Network
+  # Step 8: Render Speaker-Topic Network with placeholder co-appearance edges
   output$speaker_topic_network <- renderVisNetwork({
-    visNetwork(nodes_st, edges_speaker_topic) %>%
-      visNodes(shape = "dot", size = 10) %>%
-      visEdges(arrows = "to", color = list(color = "grey")) %>%
-      visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
-      visPhysics(solver = "forceAtlas2Based", stabilization = TRUE) %>%
-      visLayout(randomSeed = 42) %>%
-      visEvents(stabilizationIterationsDone = "function () {
-        this.setOptions({ physics: false });
-      }")
-  })
-  
-  # Step 10: Render Co-Appearance Network
-  output$speaker_co_network <- renderVisNetwork({
-    visNetwork(nodes_speaker_co, edges_speaker_co) %>%
+    visNetwork(nodes_st, bind_rows(edges_speaker_topic, edges_placeholder)) %>%
       visNodes(shape = "dot") %>%
-      visGroups(groupname = "Speaker", color = list(background = "red")) %>%
       visEdges(arrows = "none", color = list(color = "grey")) %>%
       visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
       visPhysics(solver = "forceAtlas2Based", stabilization = TRUE) %>%
@@ -194,7 +195,21 @@ server <- function(input, output, session) {
       }")
   })
   
-  # Step 11: Render Enhanced Legend
+  # Step 9: Render Co-Appearance Network
+  output$speaker_co_network <- renderVisNetwork({
+    visNetwork(nodes_speaker_st, edges_speaker_co) %>%
+      visNodes(shape = "dot") %>%
+      visGroups(groupname = "Speaker", color = list(background = "red")) %>%
+      visEdges(arrows = "none", color = list(color = "black")) %>%
+      visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+      visPhysics(solver = "forceAtlas2Based", stabilization = TRUE) %>%
+      visLayout(randomSeed = 42) %>%
+      visEvents(stabilizationIterationsDone = "function () {
+        this.setOptions({ physics: false });
+      }")
+  })
+  
+  # Step 10: Legend
   output$type_legend <- renderUI({
     legend_items <- map2_chr(names(type_colors), type_colors, function(type, color) {
       paste0(
@@ -210,6 +225,4 @@ server <- function(input, output, session) {
 
 # Run the app
 shinyApp(ui = ui, server = server)
-
-
 

@@ -24,7 +24,7 @@ library(tidyr)
 library(stringr)
 
 # Step 1: Read the inventory file
-file <- "../data/Inventory.csv"
+file <- "../data/Updated Inventory & Descriptions/Descriptions.csv"
 inventory <- read_csv(file)
 
 # Step 2: Identify topic columns
@@ -123,7 +123,7 @@ library(dplyr)
 library(readr)
 
 # Load the dataset
-file<-"../output/speaker_frequency_results(all).csv"
+file<-"../output/csv outputs/speaker_frequency_results(all).csv"
 df <- read_csv(file)
 
 # Filter out 'Montesinos' and 'Desconocido'
@@ -171,7 +171,7 @@ library(tidyverse)
 
 
 # Read in 'topic_vmt_avg_count.csv' file
-file<-"../output/topic_vmt_avg_count.csv"
+file<-"../output/csv outputs/topic_vmt_avg_count.csv"
 df <- read.csv(file)
 
 # Remove 'topic_' prefix from 'Topic' column
@@ -332,7 +332,7 @@ library(stringr)
 library(ggplot2)
 
 # Define file paths
-inventory_file <- "../data/Inventory.csv"
+inventory_file <- "../data/Updated Inventory & Descriptions/Descriptions.csv"
 directory_path <- "../data/modified_data/finalized_data"
 
 # Read the inventory data
@@ -434,125 +434,86 @@ print(paste("Total Word Count Across All Transcripts:", sum(word_count_df$Word_C
 
 # Bar Plot
 ```{r}
-# Define the path to the finalized_data folder (relative to current working directory)
+library(readr)
+library(dplyr)
+library(stringr)
+library(fs)
+library(purrr)
+
+# Define the directory
 finalized_data_path <- "../data/modified_data/finalized_data"
 
-# Load necessary libraries
-#install.packages("readr")
-#install.packages("stringr")
-#install.packages("dplyr")
-#install.packages("ggplot2")
-
-library(readr)   # For reading CSV & TSV files
-library(stringr) # For text processing
-library(dplyr)   # For data manipulation
-library(ggplot2) # For visualization
-
-# Get a list of CSV and TSV files in the finalized_data directory
-csv_files <- list.files(path = finalized_data_path, pattern = "\\.csv$", full.names = TRUE)
-tsv_files <- list.files(path = finalized_data_path, pattern = "\\.tsv$", full.names = TRUE)
-
-# Combine file lists
+# Get CSV and TSV files
+csv_files <- dir_ls(finalized_data_path, regexp = "\\.csv$")
+tsv_files <- dir_ls(finalized_data_path, regexp = "\\.tsv$")
 all_files <- c(csv_files, tsv_files)
 
-# Function to count words in the 'speech' column safely
-count_words <- function(text) {
-  if (is.null(text) || all(is.na(text))) {
-    return(0)  # Return 0 if text is NULL or all NA
-  }
-  text <- na.omit(text)  # Remove NA values
-  sum(str_count(text, "\\S+"))  # Count words in non-NA text
-}
-
-# Initialize an empty list to store data frames
-all_speaker_data <- list()
-
-# Loop through each file and accumulate results
-for (file in all_files) {
-  df <- tryCatch({
-    if (grepl("\\.csv$", file)) {
-      read_csv(file, show_col_types = FALSE)
-    } else if (grepl("\\.tsv$", file)) {
-      read_tsv(file, show_col_types = FALSE)
-    }
-  }, error = function(e) {
-    cat("Error reading file:", file, "\n")
-    return(NULL)
-  })
-  
-  # Proceed only if the file was successfully read and contains required columns
-  if (!is.null(df) && all(c("speech", "speaker_std") %in% colnames(df))) {
-    
-    # Process data to count words per speaker
-    df <- df %>%
-      filter(!is.na(speech) & !is.na(speaker_std)) %>%
-      group_by(speaker_std) %>%
-      summarise(
-        Total_Words = sum(count_words(speech)),
-        Appearances = n(),
-        .groups = "drop"
-      )
-    
-    # Store the processed data in a list
-    all_speaker_data[[basename(file)]] <- df  # Use basename(file) for readability
+# Helper to read file based on extension
+read_transcript <- function(file) {
+  if (str_detect(file, "\\.csv$")) {
+    read_csv(file, show_col_types = FALSE)
   } else {
-    cat("Skipping file (missing required columns):", basename(file), "\n")
+    read_tsv(file, show_col_types = FALSE)
   }
 }
 
-# Combine all accumulated data into a single data frame
-if (length(all_speaker_data) > 0) {
-  speaker_word_counts <- bind_rows(all_speaker_data) %>%
-    group_by(Speaker = speaker_std) %>%
-    summarise(
-      Total_Words = sum(Total_Words),
-      Appearances = sum(Appearances),
-      .groups = "drop"
-    ) %>%
-    mutate(Average_Words_Per_Appearance = Total_Words / Appearances)
-} else {
-  speaker_word_counts <- data.frame()
-  cat("No valid data found in any files.\n")
+# Initialize lists to track total word count and file appearances
+word_counts_list <- list()
+speaker_file_map <- list()
+
+# Process each file
+for (file in all_files) {
+  df <- read_transcript(file)
+  
+  if (!("speaker_std" %in% names(df)) || !("speech" %in% names(df))) next
+  
+  # Count words per speaker in this file
+  file_word_counts <- df %>%
+    filter(!is.na(speaker_std), !is.na(speech)) %>%
+    group_by(speaker_std) %>%
+    summarise(words = sum(str_count(speech, "\\S+")), .groups = "drop")
+  
+  # Update total word counts
+  for (i in seq_len(nrow(file_word_counts))) {
+    speaker <- file_word_counts$speaker_std[i]
+    words <- file_word_counts$words[i]
+    
+    word_counts_list[[speaker]] <- (word_counts_list[[speaker]] %||% 0) + words
+    speaker_file_map[[speaker]] <- union(speaker_file_map[[speaker]], file)
+  }
 }
 
-# Print summary
-cat("Total Unique Speakers:", nrow(speaker_word_counts), "\n")
+# Final summary
+summary_df <- tibble(
+  speaker_std = names(word_counts_list),
+  total_words = unlist(word_counts_list),
+  files_appeared = lengths(speaker_file_map),
+  avg_words_per_file = total_words / files_appeared
+)
 
-# Display the final aggregated results
-print(speaker_word_counts)
+# Sort by most talkative speakers
+summary_df <- summary_df %>% arrange(desc(avg_words_per_file))
 
-# Sort data by Average Words Per Appearance (Descending)
-speaker_word_counts <- speaker_word_counts %>%
-  arrange(desc(Average_Words_Per_Appearance))
+# Show result
+print(summary_df)
 
-# Create the bar plot with all speakers on the x-axis
-ggplot(speaker_word_counts, aes(x = reorder(Speaker, -Average_Words_Per_Appearance), y = Average_Words_Per_Appearance)) +
-  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.8) +
-  labs(title = "Words Per Appearance by Speaker",
-       x = "Speaker",
-       y = "Average Words Per Appearance") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1, size = 8),  # Rotate x-axis labels for readability
-    axis.text.y = element_text(size = 10)  # Keep y-axis labels readable
-  )
+library(ggplot2)
 
+# Top 20 speakers by average words per transcript
+top20 <- summary_df %>%
+  slice_max(avg_words_per_file, n = 20) %>%
+  mutate(speaker_std = fct_reorder(speaker_std, avg_words_per_file))
 
-
-# Create the bar plot showing only the top 20 speakers by average words per appearance
-top20_speakers <- speaker_word_counts %>%
-  slice_max(Average_Words_Per_Appearance, n = 20)
-
-ggplot(top20_speakers, aes(x = reorder(Speaker, -Average_Words_Per_Appearance), y = Average_Words_Per_Appearance)) +
-  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.8) +
-  labs(title = "Top 20 Speakers by Average Words Per Appearance",
-       x = "Speaker",
-       y = "Average Words Per Appearance") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1, size = 8),  # Rotate x-axis labels for readability
-    axis.text.y = element_text(size = 10)  # Keep y-axis labels readable
-  )
+# Create bar plot
+ggplot(top20, aes(x = speaker_std, y = avg_words_per_file)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Top 20 Speakers by Average Words per Appearance",
+    x = "Speaker",
+    y = "Average Words per Transcript"
+  ) +
+  theme_minimal(base_size = 10)
 
 ```
 
@@ -829,7 +790,8 @@ library(readr)
 library(stringr)
 
 # Load Actors.csv
-actors <- read_csv("../data/Actors.csv") %>%
+actors <- read_csv("../data/Updated Inventory & Descriptions/Actors.csv") %>%
+  mutate(Type = ifelse(Type == "Illict", "Illicit", Type)) %>%
   select(speaker_std, Type)
 
 # Define transcript directory
@@ -863,7 +825,7 @@ type_visits <- speaker_counts %>%
   group_by(Type) %>%
   summarise(total_visits = sum(visits), .groups = "drop")
 
-# Plot
+# Plot: Total Visits by Type
 ggplot(type_visits, aes(x = fct_reorder(Type, total_visits), y = total_visits)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -874,7 +836,9 @@ ggplot(type_visits, aes(x = fct_reorder(Type, total_visits), y = total_visits)) 
   ) +
   theme_minimal()
 
-actors <- read_csv("../data/Actors.csv")
+# Reload actors with typo fixed again (if needed downstream)
+actors <- read_csv("../data/Updated Inventory & Descriptions/Actors.csv") %>%
+  mutate(Type = ifelse(Type == "Illict", "Illicit", Type))
 
 # Count unique individuals per Type
 type_counts <- actors %>%
@@ -882,7 +846,7 @@ type_counts <- actors %>%
   distinct(speaker_std, Type) %>%
   count(Type, name = "num_individuals")
 
-# Plot
+# Plot: Number of Individuals per Type
 ggplot(type_counts, aes(x = fct_reorder(Type, num_individuals), y = num_individuals)) +
   geom_col(fill = "darkgreen") +
   coord_flip() +
@@ -892,7 +856,6 @@ ggplot(type_counts, aes(x = fct_reorder(Type, num_individuals), y = num_individu
     y = "Number of Unique Individuals"
   ) +
   theme_minimal()
-
 
 ```
 
