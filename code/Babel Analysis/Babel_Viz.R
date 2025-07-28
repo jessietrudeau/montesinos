@@ -1,5 +1,6 @@
 
 library(dplyr)
+library(readr)
 
 
 res<-"data/babel_batches/results_1.csv"
@@ -23,8 +24,312 @@ combined_df <- bind_rows(merged_df, merged_df_2)
 
 write_csv(combined_df, "data/babel_batches/combined_df.csv")
 
+
+
+
+
+#---------------------------------Montesinos Only-----------------------------------
+
+combined_df<-"data/babel_batches/combined_df.csv"
+combined_df<-read_csv(combined_df)
+combined_df <- combined_df %>% filter(speaker_std == "MONTESINOS")
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+
+# Step 1: Normalize position
+combined_df <- combined_df %>%
+  group_by(file_id) %>%
+  mutate(normalized_position = (rank(sentence_id) - 1) / (n() - 1)) %>%
+  ungroup()
+
+# Step 2: Rename for pivot
+emotion_df <- combined_df %>%
+  rename(
+    emotion_0 = label_0,
+    prob_0 = label_0_prob,
+    emotion_1 = label_1,
+    prob_1 = label_1_prob,
+    emotion_2 = label_2,
+    prob_2 = label_2_prob
+  )
+
+# Step 3: Pivot and keep normalized_position
+emotion_long <- emotion_df %>%
+  select(file_id, normalized_position,
+         emotion_0, prob_0,
+         emotion_1, prob_1,
+         emotion_2, prob_2) %>%
+  pivot_longer(
+    cols = starts_with("emotion") | starts_with("prob"),
+    names_to = c(".value", "rank"),
+    names_pattern = "(emotion|prob)_(\\d)"
+  ) %>%
+  filter(!is.na(emotion), !is.na(prob))  # Remove missing values
+
+emotion_long <- emotion_long %>%
+  mutate(emotion = str_to_title(str_trim(emotion)))
+
+# Optional: Filter to emotions with at least N observations
+emotion_summary <- emotion_long %>%
+  group_by(emotion) %>%
+  filter(n() >= 10) %>%  # Drop rare labels
+  ungroup() %>%
+  group_by(normalized_position, emotion) %>%
+  summarise(mean_prob = mean(prob), .groups = "drop")
+
+ggplot(emotion_summary, aes(x = normalized_position, y = mean_prob, color = emotion)) +
+  geom_smooth(method = "loess", span = 0.3, se = FALSE, linewidth = 1.2) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Average Emotion Probability",
+    title = "Emotion Probability Trends Across All Conversations"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "right"
+  )
+
+
+#---------------------Probability Per Conversation----------------------------
+
+
+library(dplyr)
+library(ggplot2)
+library(stringr)
+
+# Step 1: Aggregate and clamp probabilities between 0 and 1
+emotion_summary <- emotion_long %>%
+  group_by(file_id, normalized_position, emotion) %>%
+  summarise(mean_prob = mean(prob, na.rm = TRUE), .groups = "drop") %>%
+  mutate(mean_prob = pmin(pmax(mean_prob, 0), 1))
+
+# Step 2: Get all file_ids in the combined dataset
+all_files <- combined_df %>%
+  distinct(file_id) %>%
+  pull(file_id)
+
+# Step 3: Filter the emotion summary for those file_ids
+emotion_subset <- emotion_summary %>%
+  filter(file_id %in% all_files)
+
+# Bin data into e.g., 50 intervals
+emotion_binned <- emotion_subset %>%
+  mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
+  group_by(file_id, bin, emotion) %>%
+  summarise(
+    x = mean(normalized_position),
+    y = mean(mean_prob),
+    .groups = "drop"
+  )
+
+ggplot(emotion_binned, aes(x = x, y = y, color = emotion)) +
+  geom_line(size = 0.8) +
+  facet_wrap(~ file_id, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Binned Emotion Trends Across All Conversations"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 7)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None Of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"  
+    )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-------------------------Probability Per Topic-------------------------
+
+
+# Load required libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(forcats)
+library(patchwork)
+
+# Step 1: Normalize sentence position within each file
+merged_df <- combined_df %>%
+  group_by(file_id) %>%
+  mutate(normalized_position = (rank(sentence_id) - 1) / (n() - 1)) %>%
+  ungroup()
+
+# Step 2: Rename emotion labels and probabilities for pivoting
+emotion_df <- combined_df %>%
+  rename(
+    emotion_0 = label_0,
+    prob_0 = label_0_prob,
+    emotion_1 = label_1,
+    prob_1 = label_1_prob,
+    emotion_2 = label_2,
+    prob_2 = label_2_prob
+  )
+
+# Step 2.5: Clamp raw probability values BEFORE reshaping
+emotion_df <- emotion_df %>%
+  mutate(
+    prob_0 = pmin(pmax(prob_0, 0), 1),
+    prob_1 = pmin(pmax(prob_1, 0), 1),
+    prob_2 = pmin(pmax(prob_2, 0), 1)
+  )
+
+# Step 3: Reshape to long format
+emotion_long <- emotion_df %>%
+  select(file_id, topics, normalized_position,
+         emotion_0, prob_0,
+         emotion_1, prob_1,
+         emotion_2, prob_2) %>%
+  pivot_longer(
+    cols = starts_with("emotion") | starts_with("prob"),
+    names_to = c(".value", "rank"),
+    names_pattern = "(emotion|prob)_(\\d)"
+  ) %>%
+  filter(!is.na(emotion), !is.na(prob))  # Drop NAs
+
+#emotion_long <- emotion_long %>%
+# mutate(emotion = str_to_title(str_trim(emotion)))
+
+# Step 4: Aggregate emotion probabilities by topic and position
+emotion_topic_summary <- emotion_long %>%
+  group_by(topics, normalized_position, emotion) %>%
+  summarise(mean_prob = mean(prob, na.rm = TRUE), .groups = "drop")
+
+# Step 4.5: Ensure emotion is a factor with all possible levels
+emotion_topic_summary <- emotion_topic_summary %>%
+  mutate(emotion = factor(emotion, levels = c(
+    "Anger", "Disgust", "Enthusiasm", "Fear", "Hope",
+    "Joy", "None of Them", "Pride", "Sadness"
+  )))
+
+# Clean up topic strings and ensure consistent factor levels
+emotion_topic_summary <- emotion_topic_summary %>%
+  mutate(
+    topics = stringr::str_trim(topics),           # Remove leading/trailing spaces
+    topics = forcats::fct_infreq(topics)          # Make topics a factor by frequency
+  )
+
+# Bin normalized position into 50 equally spaced intervals
+emotion_topic_binned <- emotion_topic_summary %>%
+  mutate(bin = cut(normalized_position, breaks = 50, labels = FALSE)) %>%
+  group_by(topics, bin, emotion) %>%
+  summarise(
+    x = mean(normalized_position),
+    y = mean(mean_prob),
+    .groups = "drop"
+  )
+
+emotion_topic_binned <- emotion_topic_binned %>%
+  mutate(emotion = replace_na(emotion, "None of Them"))
+
+
+ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
+  geom_line(size = 1) +
+  facet_wrap(~ topics, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Emotion Trends Across All Topics"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 8)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"
+    )
+  )
+
+ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
+  geom_smooth(method = "loess", span = 0.37, se = FALSE, size = 1) +  # Try different values: 0.2, 0.5, 0.8
+  facet_wrap(~ topics, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Smoothed Emotion Trends Across All Topics"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 8)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"
+    )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #---------------------------------Overall Trends-------------------------------------
 
+
+combined_df<-"data/babel_batches/combined_df.csv"
+combined_df<-read_csv(combined_df)
 
 library(dplyr)
 library(tidyr)
@@ -273,6 +578,52 @@ ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
     )
   )
 
+ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
+  geom_smooth(method = "loess", span = 0.37, se = FALSE, size = 1) +  # Try different values: 0.2, 0.5, 0.8
+  facet_wrap(~ topics, scales = "free_y") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Normalized Position in Conversation",
+    y = "Emotion Probability",
+    title = "Smoothed Emotion Trends Across All Topics"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    strip.text = element_text(size = 8)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Anger"        = "#1b9e77",
+      "Disgust"      = "#d95f02",
+      "Enthusiasm"   = "#7570b3",
+      "Fear"         = "#e7298a",
+      "Hope"         = "#66a61e",
+      "Joy"          = "#e6ab02",
+      "None of Them" = "#a6761d",
+      "Pride"        = "#666666",
+      "Sadness"      = "#1f78b4"
+    )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -416,34 +767,7 @@ wrap_plots(plots, ncol = 3) +  # Adjust layout as needed
 
 
 
-ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
-  geom_smooth(method = "loess", span = 0.37, se = FALSE, size = 1) +  # Try different values: 0.2, 0.5, 0.8
-  facet_wrap(~ topics, scales = "free_y") +
-  coord_cartesian(ylim = c(0, 1)) +
-  labs(
-    x = "Normalized Position in Conversation",
-    y = "Emotion Probability",
-    title = "Smoothed Emotion Trends Across All Topics"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    legend.position = "bottom",
-    strip.text = element_text(size = 8)
-  ) +
-  scale_color_manual(
-    values = c(
-      "Anger"        = "#1b9e77",
-      "Disgust"      = "#d95f02",
-      "Enthusiasm"   = "#7570b3",
-      "Fear"         = "#e7298a",
-      "Hope"         = "#66a61e",
-      "Joy"          = "#e6ab02",
-      "None of Them" = "#a6761d",
-      "Pride"        = "#666666",
-      "Sadness"      = "#1f78b4"
-    )
-  )
+
 
 
 
@@ -479,7 +803,7 @@ ggplot(emotion_topic_binned, aes(x = x, y = y, color = emotion)) +
 
 # Sample 2000 rows (without replacement)
 set.seed(123)  # Optional: for reproducibility
-sample_df <- merged_df_1 %>% 
+sample_df <- combined_df %>% 
   sample_n(2000)
 
 # Write to CSV

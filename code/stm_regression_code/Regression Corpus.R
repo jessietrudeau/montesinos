@@ -8,7 +8,7 @@ library(readr)      # fast CSV/TSV reading
 
 # 2. Read your inventory and build lookups for topic & date
 inventory <- read_csv(
-  "data/Transcript inventory.csv",
+  "data/Updated Inventory & Descriptions/Descriptions.csv",
   col_types = cols(.default = "c")
 )
 
@@ -33,7 +33,7 @@ topic_lookup <- inventory %>%
 
 # 3. Read your Actors master list and build an actor‐type lookup
 actors <- read_csv(
-  "data/Actors.csv",
+  "data/Updated Inventory & Descriptions/Actors.csv",
   col_types = cols(.default = "c")
 )
 
@@ -106,8 +106,8 @@ dfm_general <- dfm(tokens_data)
 dfm_turns <- dfm_group(dfm(tokens_data), groups = text_data$speaker)
 
 # 12. Save the DFMs for later analysis
-saveRDS(dfm_general, "dfm_general.rds")
-saveRDS(dfm_turns,   "dfm_turns.rds")
+saveRDS(dfm_general, "data/dfm_general.rds")
+saveRDS(dfm_turns,   "data/dfm_turns.rds")
 
 # 13. Display brief summaries
 print(summary(dfm_general))
