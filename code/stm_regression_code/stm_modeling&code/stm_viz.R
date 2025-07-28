@@ -7,8 +7,8 @@ library(tidyr)
 library(lubridate)
 
 
-dfm_general<-readRDS("../dfm_general.rds")
-dfm_turns<-readRDS("../dfm_turns.rds")
+dfm_general<-readRDS("data/dfm_general.rds")
+dfm_turns<-readRDS("data/dfm_turns.rds")
 
 
 
@@ -67,7 +67,7 @@ effect_type2 <- estimateEffect(
 
 # Inspect
 summary(effect_type2)
-plot(effect_type2, covariate = "type", topics = 18, model = stm_filt,
+plot(effect_type2, covariate = "type", topics = , model = stm_filt,
      main = "Topic 2 Prevalence by Actor Type")
 
 
