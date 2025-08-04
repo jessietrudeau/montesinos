@@ -33,13 +33,8 @@ server <- function(input, output, session) {
   speaker_freq_all <- map_dfr(transcript_files, function(path) {
     ext <- tools::file_ext(path)
     df <- if (ext == "csv") read_csv(path, col_types = cols()) else read_tsv(path, col_types = cols())
-    
-    if (!("speaker_std" %in% names(df))) {
-      return(tibble(speaker_std = character(), n = character()))
-    }
-    
+    if (!("speaker_std" %in% names(df))) return(tibble(speaker_std = character(), n = character()))
     transcript_id <- basename(path)
-    
     df %>%
       filter(!is.na(speaker_std), speaker_std != "") %>%
       distinct(speaker_std) %>%
@@ -63,7 +58,9 @@ server <- function(input, output, session) {
              Type == "Elected official"       ~ "Elected Official",
              Type == "Business"               ~ "Businessperson",
              TRUE                             ~ Type
-           ))
+           ),
+           name = str_trim(`...1`))  # or replace `...1` with the actual column that contains names
+  
   
   # Step 2: Reshape Topics
   long_topics <- descriptions %>%
@@ -78,7 +75,7 @@ server <- function(input, output, session) {
     filter(!is.na(speaker), speaker != "") %>%
     mutate(n = as.character(n), speaker = str_trim(speaker))
   
-  # Step 4: Speaker ↔ Topic Edges with frequency-based width
+  # Step 4: Speaker ↔ Topic Edges
   edges_speaker_topic <- speaker_long %>%
     inner_join(long_topics, by = "n") %>%
     mutate(speaker_std = str_to_lower(speaker)) %>%
@@ -86,7 +83,7 @@ server <- function(input, output, session) {
     left_join(speaker_frequency %>% mutate(speaker_std = str_to_lower(speaker_std)), by = "speaker_std") %>%
     transmute(from = speaker_std, to = topic, width = pmax(1, log1p(conversation_count)))
   
-  # Step 4B: Speaker Co-Appearance Edges (used as placeholder for shared transcripts)
+  # Step 4B: Speaker Co-Appearance Edges (placeholders for shared conversations)
   speaker_pairs_topic_net <- speaker_long %>%
     select(n, speaker) %>%
     distinct() %>%
@@ -116,11 +113,12 @@ server <- function(input, output, session) {
     filter(from != to)
   
   edges_speaker_co <- speaker_pairs %>%
+    mutate(from = str_to_lower(from), to = str_to_lower(to)) %>%
     group_by(from, to) %>%
     summarise(weight = n(), .groups = "drop") %>%
     mutate(width = 1)
   
-  # Step 6: Define Colors by Type
+  # Step 6: Define Colors
   type_colors <- c(
     "Illicit"          = "#e41a1c",
     "Security"         = "#377eb8",
@@ -133,7 +131,7 @@ server <- function(input, output, session) {
     "Media"            = "#66c2a5"
   )
   
-  # Step 7: Speaker-Topic Nodes
+  # Step 7: Speaker Nodes
   nodes_speaker_st <- speaker_long %>%
     select(speaker) %>% distinct() %>%
     mutate(id = str_to_lower(speaker)) %>%
@@ -141,7 +139,6 @@ server <- function(input, output, session) {
     left_join(actor_descriptions %>%
                 mutate(speaker_std = str_trim(speaker_std),
                        speaker_std_lower = str_to_lower(speaker_std),
-                       Type = str_trim(Type),
                        Position = coalesce(Position, "No info")),
               by = c("id_lower" = "speaker_std_lower")) %>%
     left_join(speaker_frequency %>% mutate(speaker_std = str_to_lower(speaker_std)),
@@ -150,9 +147,13 @@ server <- function(input, output, session) {
       group = "Speaker",
       color = type_colors[Type],
       color = ifelse(is.na(color), "#cccccc", color),
+      label = "",  # Hides label from display
       title = paste0(
-        "Speaker: ", id, "<br>Type: ", Type, "<br>Position: ", Position,
-        "<br>Transcripts: ", conversation_count
+        "<b>", coalesce(name, id), "</b><br>",
+        "Standardized ID: ", id, "<br>",
+        "Type: ", Type, "<br>",
+        "Position: ", Position, "<br>",
+        "Transcripts: ", conversation_count
       ),
       value = case_when(
         conversation_count > 80 ~ 140,
@@ -162,9 +163,10 @@ server <- function(input, output, session) {
         TRUE                    ~ 40
       )
     ) %>%
-    select(id, group, title, color, value) %>%
+    select(id, group, title, color, value, label) %>%
     distinct(id, .keep_all = TRUE)
   
+  # Step 8: Topic Nodes
   nodes_topic_st <- long_topics %>%
     select(id = topic) %>% distinct() %>%
     left_join(topic_descriptions %>%
@@ -173,16 +175,18 @@ server <- function(input, output, session) {
               by = c("id" = "topic")) %>%
     mutate(
       group = "Topic",
-      title = str_replace_all(description, "\n", "<br>"),
+      label = "",  # Hides label from display
+      title = paste0("<b>", str_to_title(str_replace_all(id, "_", " ")), "</b><br>", 
+                     str_replace_all(description, "\n", "<br>")),
       value = 300,
       color = "maroon"
     ) %>%
-    select(id, group, title, value, color) %>%
+    select(id, group, title, value, color, label) %>%
     distinct(id, .keep_all = TRUE)
   
   nodes_st <- bind_rows(nodes_speaker_st, nodes_topic_st)
   
-  # Step 8: Render Speaker-Topic Network with placeholder co-appearance edges
+  # Step 9: Speaker-Topic Network
   output$speaker_topic_network <- renderVisNetwork({
     visNetwork(nodes_st, bind_rows(edges_speaker_topic, edges_placeholder)) %>%
       visNodes(shape = "dot") %>%
@@ -195,7 +199,7 @@ server <- function(input, output, session) {
       }")
   })
   
-  # Step 9: Render Co-Appearance Network
+  # Step 10: Co-Appearance Network
   output$speaker_co_network <- renderVisNetwork({
     visNetwork(nodes_speaker_st, edges_speaker_co) %>%
       visNodes(shape = "dot") %>%
@@ -209,7 +213,7 @@ server <- function(input, output, session) {
       }")
   })
   
-  # Step 10: Legend
+  # Step 11: Legend
   output$type_legend <- renderUI({
     legend_items <- map2_chr(names(type_colors), type_colors, function(type, color) {
       paste0(
@@ -225,4 +229,7 @@ server <- function(input, output, session) {
 
 # Run the app
 shinyApp(ui = ui, server = server)
+
+
+
 

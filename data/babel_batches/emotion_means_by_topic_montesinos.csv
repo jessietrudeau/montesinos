@@ -1,0 +1,519 @@
+topic,emotion,mean
+canal4,Anger,0.2547525568054601
+canal4,Disgust,0.15659523898630137
+canal4,Enthusiasm,0.2716288033721801
+canal4,Fear,0.1463893907609649
+canal4,Hope,0.09738731725224072
+canal4,Joy,0.16791835579243086
+canal4,None of Them,0.13248831600416666
+canal4,None of them,0.6387935055646332
+canal4,Pride,0.13426043751148564
+canal4,Sadness,0.08888186594268503
+"canal4, media",Anger,0.24060811906637364
+"canal4, media",Disgust,0.1082772206
+"canal4, media",Enthusiasm,0.08824460470615034
+"canal4, media",Fear,0.16102715553571428
+"canal4, media",Hope,0.09760862761337047
+"canal4, media",Joy,0.14560769623913045
+"canal4, media",None of them,0.6470238228847497
+"canal4, media",Pride,0.16074694440413223
+"canal4, media",Sadness,0.09662946117636363
+"canal4, media, ivcher",Anger,0.26224088228125
+"canal4, media, ivcher",Disgust,0.2708516995714286
+"canal4, media, ivcher",Enthusiasm,0.09755570321764706
+"canal4, media, ivcher",Fear,0.09070123320000001
+"canal4, media, ivcher",Hope,0.08274296125
+"canal4, media, ivcher",Joy,0.09852059512727272
+"canal4, media, ivcher",None of them,0.6115042058043478
+"canal4, media, ivcher",Pride,0.115921286
+"canal4, media, ivcher",Sadness,0.14948164982142859
+"canal4, media, state_capture",Anger,0.20661709654385965
+"canal4, media, state_capture",Disgust,0.573326155
+"canal4, media, state_capture",Enthusiasm,0.06865762554274193
+"canal4, media, state_capture",Fear,0.11881351883333333
+"canal4, media, state_capture",Hope,0.09718290503398058
+"canal4, media, state_capture",Joy,0.1751393545471698
+"canal4, media, state_capture",None of them,0.7001935331135135
+"canal4, media, state_capture",Pride,0.18081922596296296
+"canal4, media, state_capture",Sadness,0.13667200659090908
+"canal4, wiese",Anger,0.26384736696861316
+"canal4, wiese",Disgust,0.11811717268421053
+"canal4, wiese",Enthusiasm,0.08076374507831932
+"canal4, wiese",Fear,0.14559136003645834
+"canal4, wiese",Hope,0.09758811053358209
+"canal4, wiese",Joy,0.16715106742093022
+"canal4, wiese",None of them,0.6336550010687023
+"canal4, wiese",Pride,0.15987459281064814
+"canal4, wiese",Sadness,0.08997262832289157
+ecuador,Anger,0.2348128318217099
+ecuador,Disgust,0.22778268505555554
+ecuador,Enthusiasm,0.27514953112391655
+ecuador,Fear,0.18193948091875
+ecuador,Hope,0.1215821846003413
+ecuador,Joy,0.12300099767268723
+ecuador,None of Them,0.11499958764705882
+ecuador,None of them,0.640788191225015
+ecuador,Pride,0.15928318417011494
+ecuador,Sadness,0.11107081306206897
+"ecuador, media",Anger,0.19722496194172495
+"ecuador, media",Disgust,0.25358025
+"ecuador, media",Enthusiasm,0.08465579721865828
+"ecuador, media",Fear,0.18558579827941177
+"ecuador, media",Hope,0.13353630240862832
+"ecuador, media",Joy,0.11996933687095436
+"ecuador, media",None of them,0.65291534753886
+"ecuador, media",Pride,0.17703756011257143
+"ecuador, media",Sadness,0.10192548936690647
+foreign,Anger,0.20194610258712328
+foreign,Disgust,0.2106043091111111
+foreign,Enthusiasm,0.411725111299948
+foreign,Fear,0.1675941296109489
+foreign,Hope,0.09653745170946793
+foreign,Joy,0.14394401069657659
+foreign,None of Them,0.19749173826359448
+foreign,None of them,0.6465393450355646
+foreign,Pride,0.1267508549869253
+foreign,Sadness,0.12481758917130978
+foreign,NA,NA
+"foreign, public_officials",Anger,0.22264821215833333
+"foreign, public_officials",Disgust,0.055443175
+"foreign, public_officials",Enthusiasm,0.6637546275391304
+"foreign, public_officials",Fear,0.10869390453846155
+"foreign, public_officials",Hope,0.06622088248070175
+"foreign, public_officials",Joy,0.15371575652380953
+"foreign, public_officials",None of Them,0.14990974616666666
+"foreign, public_officials",Pride,0.10843264832142857
+"foreign, public_officials",Sadness,0.09026017794736842
+"foreign, safety",Anger,0.22427673338247864
+"foreign, safety",Disgust,0.33223848
+"foreign, safety",Enthusiasm,0.1332840620034091
+"foreign, safety",Fear,0.203974232
+"foreign, safety",Hope,0.12235071012165605
+"foreign, safety",Joy,0.12531276887719298
+"foreign, safety",None of Them,0.25895711633333335
+"foreign, safety",None of them,0.6210700024566929
+"foreign, safety",Pride,0.17558782545714285
+"foreign, safety",Sadness,0.10119689447530865
+ivcher,Anger,0.2254777771571827
+ivcher,Disgust,0.16909664416666667
+ivcher,Enthusiasm,0.23822327269520105
+ivcher,Fear,0.1671280393125
+ivcher,Hope,0.09511099114910715
+ivcher,Joy,0.13585678793680298
+ivcher,None of Them,0.06006407517647059
+ivcher,None of them,0.6373380189648585
+ivcher,Pride,0.1460184379063241
+ivcher,Sadness,0.09346509648622048
+"ivcher, foreign",Anger,0.12197523900925926
+"ivcher, foreign",Enthusiasm,0.7870745165240964
+"ivcher, foreign",Fear,0.05370361775
+"ivcher, foreign",Hope,0.06025766928857143
+"ivcher, foreign",Joy,0.1219559881
+"ivcher, foreign",None of Them,0.06006407517647059
+"ivcher, foreign",Pride,0.05577531307311828
+"ivcher, foreign",Sadness,0.026767613
+"ivcher, safety",Anger,0.12753073781666666
+"ivcher, safety",Enthusiasm,0.06896565161875
+"ivcher, safety",Fear,0.21612356014285714
+"ivcher, safety",Hope,0.11237069038225807
+"ivcher, safety",Joy,0.048912901777777774
+"ivcher, safety",None of them,0.732374569029703
+"ivcher, safety",Pride,0.04992730166666667
+"ivcher, safety",Sadness,0.0302584425
+lucchetti_factory,Anger,0.22824155016390532
+lucchetti_factory,Disgust,0.14442298759574468
+lucchetti_factory,Enthusiasm,0.592362317010348
+lucchetti_factory,Fear,0.1511871410378882
+lucchetti_factory,Hope,0.08277221199491691
+lucchetti_factory,Joy,0.14172760518101266
+lucchetti_factory,None of Them,0.16346274108087247
+lucchetti_factory,None of them,0.7438185750590278
+lucchetti_factory,Pride,0.10952105215492289
+lucchetti_factory,Sadness,0.11076709047704918
+"lucchetti_factory, reelection",Anger,0.13210447621717172
+"lucchetti_factory, reelection",Enthusiasm,0.06572713354186047
+"lucchetti_factory, reelection",Fear,0.06417577155555555
+"lucchetti_factory, reelection",Hope,0.08141112185136987
+"lucchetti_factory, reelection",Joy,0.10592525596091953
+"lucchetti_factory, reelection",None of them,0.7438185750590278
+"lucchetti_factory, reelection",Pride,0.1498802105
+"lucchetti_factory, reelection",Sadness,0.12391802752592593
+"lucchetti_factory, safety",Anger,0.34871075100191257
+"lucchetti_factory, safety",Disgust,0.11896240772413794
+"lucchetti_factory, safety",Enthusiasm,0.5554188382826709
+"lucchetti_factory, safety",Fear,0.21151531578125
+"lucchetti_factory, safety",Hope,0.10745894050235294
+"lucchetti_factory, safety",Joy,0.14143226413232324
+"lucchetti_factory, safety",None of Them,0.17146921048555555
+"lucchetti_factory, safety",Pride,0.12576318660854702
+"lucchetti_factory, safety",Sadness,0.0807067095180723
+media,Anger,0.22953989748275916
+media,Disgust,0.13190913719554456
+media,Enthusiasm,0.33263786239804366
+media,Fear,0.15321222645238095
+media,Hope,0.09065167593525021
+media,Joy,0.13772367832691687
+media,None of Them,0.18355022504810126
+media,None of them,0.6653606117612373
+media,Pride,0.12393846681521518
+media,Sadness,0.09508202738889904
+media,NA,NA
+"media, foreign",Anger,0.24042310871969697
+"media, foreign",Disgust,0.46694235
+"media, foreign",Enthusiasm,0.11239277267244897
+"media, foreign",Fear,0.19186407387719298
+"media, foreign",Hope,0.13273008504756756
+"media, foreign",Joy,0.15743720607017544
+"media, foreign",None of them,0.5988977891113924
+"media, foreign",Pride,0.207311983326
+"media, foreign",Sadness,0.09900752222727273
+"media, foreign",NA,NA
+"media, foreign, safety",Anger,0.1904104156821192
+"media, foreign, safety",Disgust,0.04841662066666667
+"media, foreign, safety",Enthusiasm,0.6146651038249027
+"media, foreign, safety",Fear,0.17701149266666666
+"media, foreign, safety",Hope,0.12460276530648148
+"media, foreign, safety",Joy,0.15602908344444444
+"media, foreign, safety",None of Them,0.16144870506923076
+"media, foreign, safety",Pride,0.1406810583601695
+"media, foreign, safety",Sadness,0.12971386901219512
+"media, foreign, safety, state_capture",Anger,0.18450880808208955
+"media, foreign, safety, state_capture",Disgust,0.174789272
+"media, foreign, safety, state_capture",Enthusiasm,0.6282301588065099
+"media, foreign, safety, state_capture",Fear,0.14920279698604652
+"media, foreign, safety, state_capture",Hope,0.07763158640692641
+"media, foreign, safety, state_capture",Joy,0.1443888258907285
+"media, foreign, safety, state_capture",None of Them,0.22277492500986842
+"media, foreign, safety, state_capture",Pride,0.08691569319428571
+"media, foreign, safety, state_capture",Sadness,0.18874836921929825
+"media, ivcher",Anger,0.24955144798507461
+"media, ivcher",Disgust,0.084730250000000007
+"media, ivcher",Enthusiasm,0.0874132561711111
+"media, ivcher",Fear,0.07874407288888889
+"media, ivcher",Hope,0.1080797854175
+"media, ivcher",Joy,0.1531592720625
+"media, ivcher",None of them,0.6244729899046512
+"media, ivcher",Pride,0.2884364273076923
+"media, ivcher",Sadness,0.11242056617241379
+"media, public_officials, state_capture",Anger,0.1344205112838384
+"media, public_officials, state_capture",Enthusiasm,0.06567785274268292
+"media, public_officials, state_capture",Fear,0.20907690066666668
+"media, public_officials, state_capture",Hope,0.0651002264015625
+"media, public_officials, state_capture",Joy,0.1173807800625
+"media, public_officials, state_capture",None of them,0.765045945
+"media, public_officials, state_capture",Pride,0.1386771145095238
+"media, public_officials, state_capture",Sadness,0.029736947649999998
+"media, safety",Anger,0.2082060205815857
+"media, safety",Disgust,0.19368222285714287
+"media, safety",Enthusiasm,0.06785164553852041
+"media, safety",Fear,0.20889969388135593
+"media, safety",Hope,0.08576399088338871
+"media, safety",Joy,0.13241287948304348
+"media, safety",None of them,0.6575242904317647
+"media, safety",Pride,0.1795604063726415
+"media, safety",Sadness,0.14377328059192546
+"media, state_capture",Anger,0.13304344053252032
+"media, state_capture",Disgust,0.18915777666666667
+"media, state_capture",Enthusiasm,0.05660144998837209
+"media, state_capture",Fear,0.05405119524
+"media, state_capture",Hope,0.06356838682523365
+"media, state_capture",Joy,0.08989193918181818
+"media, state_capture",None of them,0.767365737092511
+"media, state_capture",Pride,0.14110552323076922
+"media, state_capture",Sadness,0.10079073835714286
+"media, wiese, public_officials",Anger,0.19853593027407407
+"media, wiese, public_officials",Disgust,0.1086557908888889
+"media, wiese, public_officials",Enthusiasm,0.06623970578037974
+"media, wiese, public_officials",Fear,0.11893101128888889
+"media, wiese, public_officials",Hope,0.08600427875241379
+"media, wiese, public_officials",Joy,0.12115698496153847
+"media, wiese, public_officials",None of them,0.6953211051301059
+"media, wiese, public_officials",Pride,0.12955831046037736
+"media, wiese, public_officials",Sadness,0.08149367606203704
+"media, wiese, state_capture",Anger,0.21364847006338028
+"media, wiese, state_capture",Disgust,0.08134865127272728
+"media, wiese, state_capture",Enthusiasm,0.7391619350406091
+"media, wiese, state_capture",Fear,0.067719974132
+"media, wiese, state_capture",Hope,0.050572224109375
+"media, wiese, state_capture",Joy,0.1155949559
+"media, wiese, state_capture",None of Them,0.1382673971153846
+"media, wiese, state_capture",Pride,0.05245180978571429
+"media, wiese, state_capture",Sadness,0.05362124559375
+miraflores,Anger,0.27202896191341175
+miraflores,Disgust,0.18904682506666667
+miraflores,Enthusiasm,0.45115429747341773
+miraflores,Fear,0.213777047125
+miraflores,Hope,0.11937182287157895
+miraflores,Joy,0.19763279567707007
+miraflores,None of Them,0.13179375781132074
+miraflores,None of them,0.5383822505905109
+miraflores,Pride,0.16793414034497206
+miraflores,Sadness,0.10911399748648648
+"miraflores, canal4",Anger,0.2179905191
+"miraflores, canal4",Disgust,0.2362191725
+"miraflores, canal4",Enthusiasm,0.6410547278655779
+"miraflores, canal4",Fear,0.17524348884444443
+"miraflores, canal4",Hope,0.10787648868278689
+"miraflores, canal4",Joy,0.21061850718392858
+"miraflores, canal4",None of Them,0.13179375781132074
+"miraflores, canal4",Pride,0.1299137248299578
+"miraflores, canal4",Sadness,0.09275482320588235
+municipal98,Anger,0.22270483678584796
+municipal98,Disgust,0.12922742304166665
+municipal98,Enthusiasm,0.6501175758881728
+municipal98,Fear,0.14764484971149425
+municipal98,Hope,0.07823190157652533
+municipal98,Joy,0.13439214000869565
+municipal98,None of Them,0.14412254919195402
+municipal98,None of them,0.5980564573067093
+municipal98,Pride,0.0811165757171831
+municipal98,Sadness,0.10660124635714285
+"municipal98, canal4, media",Anger,0.3193742043292683
+"municipal98, canal4, media",Disgust,0.151519138375
+"municipal98, canal4, media",Enthusiasm,0.11465010173133333
+"municipal98, canal4, media",Fear,0.074107366625
+"municipal98, canal4, media",Hope,0.11522786264383561
+"municipal98, canal4, media",Joy,0.18198036471311474
+"municipal98, canal4, media",None of them,0.5980564573067093
+"municipal98, canal4, media",Pride,0.13833702939189188
+"municipal98, canal4, media",Sadness,0.05484540725
+"municipal98, media",Anger,0.15698994475054545
+"municipal98, media",Disgust,0.235623627
+"municipal98, media",Enthusiasm,0.7345649997784689
+"municipal98, media",Fear,0.15569085699642857
+"municipal98, media",Hope,0.07498505319525066
+"municipal98, media",Joy,0.11017912298030302
+"municipal98, media",None of Them,0.14769689007307693
+"municipal98, media",Pride,0.0743366667258567
+"municipal98, media",Sadness,0.1243658966884058
+promotions,Anger,0.21024632288436945
+promotions,Disgust,0.12878550392592594
+promotions,Enthusiasm,0.2053017938340782
+promotions,Fear,0.16378779876
+promotions,Hope,0.11356826734103367
+promotions,Joy,0.20321969220330097
+promotions,None of Them,0.11392019408750001
+promotions,None of them,0.6284730476145096
+promotions,Pride,0.15712329732964603
+promotions,Sadness,0.0996093743970238
+"promotions, foreign, public_officials",Anger,0.20438780916870228
+"promotions, foreign, public_officials",Disgust,0.206745991125
+"promotions, foreign, public_officials",Enthusiasm,0.07727004540539419
+"promotions, foreign, public_officials",Fear,0.14736770679310346
+"promotions, foreign, public_officials",Hope,0.09294000554285714
+"promotions, foreign, public_officials",Joy,0.17810932678380953
+"promotions, foreign, public_officials",None of them,0.6613033983174603
+"promotions, foreign, public_officials",Pride,0.1528078923432836
+"promotions, foreign, public_officials",Sadness,0.12169792722
+public_officials,Anger,0.2117397052961039
+public_officials,Disgust,0.15337503671875
+public_officials,Enthusiasm,0.3011088474129438
+public_officials,Fear,0.13989696603508772
+public_officials,Hope,0.08147079579520737
+public_officials,Joy,0.14289388511551313
+public_officials,None of Them,0.128232398603125
+public_officials,None of them,0.6768912786211765
+public_officials,Pride,0.1126985405498943
+public_officials,Sadness,0.08918237814907408
+"public_officials, safety, state_capture",Anger,0.1982589354326923
+"public_officials, safety, state_capture",Enthusiasm,0.7675775228346456
+"public_officials, safety, state_capture",Fear,0.16627146075000002
+"public_officials, safety, state_capture",Hope,0.0448293250952381
+"public_officials, safety, state_capture",Joy,0.08900982861904762
+"public_officials, safety, state_capture",None of Them,0.09284124142857143
+"public_officials, safety, state_capture",Pride,0.05241467061369863
+"public_officials, safety, state_capture",Sadness,0.048577482923076926
+reelection,Anger,0.2872989495059195
+reelection,Disgust,0.09531441341972477
+reelection,Enthusiasm,0.4123041964034573
+reelection,Fear,0.15951664780429253
+reelection,Hope,0.11134716015932439
+reelection,Joy,0.1753939690151594
+reelection,None of Them,0.19226648355982143
+reelection,None of them,0.6199674681974645
+reelection,Pride,0.12917348335811002
+reelection,Sadness,0.08260749662145046
+"reelection, canal4, media, public_officials",Anger,0.24267668500625
+"reelection, canal4, media, public_officials",Disgust,0.1651459185
+"reelection, canal4, media, public_officials",Enthusiasm,0.7269689633552632
+"reelection, canal4, media, public_officials",Fear,0.016270556
+"reelection, canal4, media, public_officials",Hope,0.06420722063714286
+"reelection, canal4, media, public_officials",Joy,0.14854533524242425
+"reelection, canal4, media, public_officials",None of Them,0.13442576780526316
+"reelection, canal4, media, public_officials",Pride,0.06828696403561643
+"reelection, canal4, media, public_officials",Sadness,0.04688606085
+"reelection, media",Anger,0.28731051563542603
+"reelection, media",Disgust,0.13616067333333334
+"reelection, media",Enthusiasm,0.1185177244129717
+"reelection, media",Fear,0.21176510025
+"reelection, media",Hope,0.12878847852915662
+"reelection, media",Joy,0.1558528596
+"reelection, media",None of them,0.5842071305478723
+"reelection, media",Pride,0.24108748369430893
+"reelection, media",Sadness,0.07508784740853658
+"reelection, media, ivcher",Anger,0.24900715557663552
+"reelection, media, ivcher",Enthusiasm,0.10185645127857143
+"reelection, media, ivcher",Fear,0.16173567304347825
+"reelection, media, ivcher",Hope,0.1278273837025
+"reelection, media, ivcher",Joy,0.19430342944883722
+"reelection, media, ivcher",None of them,0.6079019639003984
+"reelection, media, ivcher",Pride,0.178334464828125
+"reelection, media, ivcher",Sadness,0.093779679625
+"reelection, media, public_officials",Anger,0.22437889725000001
+"reelection, media, public_officials",Disgust,0.1964754465
+"reelection, media, public_officials",Enthusiasm,0.07849730565671642
+"reelection, media, public_officials",Fear,0.22010809666666667
+"reelection, media, public_officials",Hope,0.06597723357446808
+"reelection, media, public_officials",Joy,0.2057282001764706
+"reelection, media, public_officials",None of them,0.690782505827957
+"reelection, media, public_officials",Pride,0.16758534473333334
+"reelection, media, public_officials",Sadness,0.18287760655555557
+"reelection, media, state_capture",Anger,0.16455669536589862
+"reelection, media, state_capture",Disgust,0.036146607
+"reelection, media, state_capture",Enthusiasm,0.49602114703810624
+"reelection, media, state_capture",Fear,0.13832825483333333
+"reelection, media, state_capture",Hope,0.10011657126267606
+"reelection, media, state_capture",Joy,0.15455197530673076
+"reelection, media, state_capture",None of Them,0.13489001192857142
+"reelection, media, state_capture",None of them,0.6951905706971154
+"reelection, media, state_capture",Pride,0.13151494531641025
+"reelection, media, state_capture",Sadness,0.07194350423454546
+"reelection, promotions",Anger,0.26858178738829785
+"reelection, promotions",Disgust,0.09918733717647059
+"reelection, promotions",Enthusiasm,0.12150367449279732
+"reelection, promotions",Fear,0.1613186467763158
+"reelection, promotions",Hope,0.13645156280533088
+"reelection, promotions",Joy,0.18691856670044643
+"reelection, promotions",None of them,0.5910332743372515
+"reelection, promotions",Pride,0.19179838737254903
+"reelection, promotions",Sadness,0.09093235525192307
+"reelection, safety, state_capture",Anger,0.27597301294090637
+"reelection, safety, state_capture",Disgust,0.08141553641666667
+"reelection, safety, state_capture",Enthusiasm,0.5821925219256654
+"reelection, safety, state_capture",Fear,0.1222292805
+"reelection, safety, state_capture",Hope,0.12379326424559585
+"reelection, safety, state_capture",Joy,0.14894665753658537
+"reelection, safety, state_capture",None of Them,0.19072134681764705
+"reelection, safety, state_capture",Pride,0.12620636409535865
+"reelection, safety, state_capture",Sadness,0.058044143566666664
+"reelection, state_capture",Anger,0.3328781291281726
+"reelection, state_capture",Disgust,0.0649949866
+"reelection, state_capture",Enthusiasm,0.5511113465178654
+"reelection, state_capture",Fear,0.16020021544936708
+"reelection, state_capture",Hope,0.08900240788793774
+"reelection, state_capture",Joy,0.2602262084065657
+"reelection, state_capture",None of Them,0.21368244322166666
+"reelection, state_capture",Pride,0.11686949354594595
+"reelection, state_capture",Sadness,0.08953788394842767
+referendum,Anger,0.3112604065470322
+referendum,Disgust,0.08724413715340909
+referendum,Enthusiasm,0.5440744406882255
+referendum,Fear,0.1507672721911111
+referendum,Hope,0.0918615403539007
+referendum,Joy,0.13482976360791507
+referendum,None of Them,0.18622380160704224
+referendum,None of them,0.62421212062606235
+referendum,Pride,0.10508217559961686
+referendum,Sadness,0.07929362982112333
+"referendum, ecuador, reelection, state_capture",Anger,0.3620457932159091
+"referendum, ecuador, reelection, state_capture",Disgust,0.16826069000000002
+"referendum, ecuador, reelection, state_capture",Enthusiasm,0.5718117493935484
+"referendum, ecuador, reelection, state_capture",Fear,0.2353942598888889
+"referendum, ecuador, reelection, state_capture",Hope,0.08963652024590164
+"referendum, ecuador, reelection, state_capture",Joy,0.2354320705
+"referendum, ecuador, reelection, state_capture",None of Them,0.15267088533333334
+"referendum, ecuador, reelection, state_capture",Pride,0.10305661149305556
+"referendum, ecuador, reelection, state_capture",Sadness,0.07378502782
+"referendum, ecuador, state_capture",Anger,0.20946130726324785
+"referendum, ecuador, state_capture",Disgust,0.190226018
+"referendum, ecuador, state_capture",Enthusiasm,0.11253594323531353
+"referendum, ecuador, state_capture",Fear,0.1933796179032258
+"referendum, ecuador, state_capture",Hope,0.11835783753256705
+"referendum, ecuador, state_capture",Joy,0.09892376245692308
+"referendum, ecuador, state_capture",None of them,0.62421212062606235
+"referendum, ecuador, state_capture",Pride,0.1709512321625
+"referendum, ecuador, state_capture",Sadness,0.13078285223717948
+"referendum, municipal98, media",Anger,0.16470515101290323
+"referendum, municipal98, media",Disgust,0.07845333500000001
+"referendum, municipal98, media",Enthusiasm,0.7338209641433121
+"referendum, municipal98, media",Fear,0.09001646427272728
+"referendum, municipal98, media",Hope,0.0639134567617801
+"referendum, municipal98, media",Joy,0.1185201999164179
+"referendum, municipal98, media",None of Them,0.15075789962
+"referendum, municipal98, media",Pride,0.07789327995821918
+"referendum, municipal98, media",Sadness,0.08139103295714285
+"referendum, reelection",Anger,0.30459073629558825
+"referendum, reelection",Disgust,0.09981866372727273
+"referendum, reelection",Enthusiasm,0.5955421276330275
+"referendum, reelection",Fear,0.14732471491836735
+"referendum, reelection",Hope,0.0851888931600939
+"referendum, reelection",Joy,0.1554599935
+"referendum, reelection",None of Them,0.18743909208474577
+"referendum, reelection",Pride,0.08970216122669902
+"referendum, reelection",Sadness,0.076097297397351
+"referendum, reelection, media, state_capture",Anger,0.37836595189921507
+"referendum, reelection, media, state_capture",Disgust,0.058903699134146344
+"referendum, reelection, media, state_capture",Enthusiasm,0.5700208599783505
+"referendum, reelection, media, state_capture",Fear,0.11918417023728814
+"referendum, reelection, media, state_capture",Hope,0.08440090941111111
+"referendum, reelection, media, state_capture",Joy,0.11500023957272727
+"referendum, reelection, media, state_capture",None of Them,0.20466139129411764
+"referendum, reelection, media, state_capture",Pride,0.08452321675932642
+"referendum, reelection, media, state_capture",Sadness,0.05017018112745098
+"referendum, reelection, safety",Anger,0.3390459408649547
+"referendum, reelection, safety",Disgust,0.079414056
+"referendum, reelection, safety",Enthusiasm,0.5575607187712177
+"referendum, reelection, safety",Fear,0.13253096451612903
+"referendum, reelection, safety",Hope,0.11201851445791855
+"referendum, reelection, safety",Joy,0.17716806282528735
+"referendum, reelection, safety",None of Them,0.18937269728
+"referendum, reelection, safety",Pride,0.12409096668660714
+"referendum, reelection, safety",Sadness,0.06591026094525547
+"referendum, reelection, state_capture",Anger,0.3958571021439394
+"referendum, reelection, state_capture",Disgust,0.1858314475
+"referendum, reelection, state_capture",Enthusiasm,0.5807494981287878
+"referendum, reelection, state_capture",Fear,0.056867752
+"referendum, reelection, state_capture",Hope,0.07397462527580645
+"referendum, reelection, state_capture",Joy,0.2142516764117647
+"referendum, reelection, state_capture",None of Them,0.12284324267692308
+"referendum, reelection, state_capture",Pride,0.08573046777123287
+"referendum, reelection, state_capture",Sadness,0.11971156842857143
+safety,Anger,0.2422126893500571
+safety,Disgust,0.1581073716825397
+safety,Enthusiasm,0.5129420472738565
+safety,Fear,0.17344911415380876
+safety,Hope,0.11002575948057909
+safety,Joy,0.1548516415106504
+safety,None of Them,0.20367424353924052
+safety,None of them,0.6345979281372962
+safety,Pride,0.13367231022714607
+safety,Sadness,0.1121951797657265
+"safety, state_capture",Anger,0.215771727204023
+"safety, state_capture",Disgust,0.06862175633333334
+"safety, state_capture",Enthusiasm,0.58000112375
+"safety, state_capture",Fear,0.18201311540384615
+"safety, state_capture",Hope,0.157239876144
+"safety, state_capture",Joy,0.1703359745943396
+"safety, state_capture",None of Them,0.2982960350428571
+"safety, state_capture",Pride,0.1470332547031111
+"safety, state_capture",Sadness,0.06848329106896552
+state_capture,Anger,0.27240614890009013
+state_capture,Disgust,0.09004969967405063
+state_capture,Enthusiasm,0.5277807012930266
+state_capture,Fear,0.1510541893321503
+state_capture,Hope,0.095594154541717
+state_capture,Joy,0.15647895571537784
+state_capture,None of Them,0.2149642907579284
+state_capture,None of them,0.6849503503275862
+state_capture,Pride,0.11430624466579045
+state_capture,Sadness,0.09297810775329429
+wiese,Anger,0.2353412296684574
+wiese,Disgust,0.10967568696551724
+wiese,Enthusiasm,0.2760275691603065
+wiese,Fear,0.12663653870361447
+wiese,Hope,0.08435871074733334
+wiese,Joy,0.14942162319707114
+wiese,None of Them,0.1382673971153846
+wiese,None of them,0.6543355159264332
+wiese,Pride,0.11113990799892473
+wiese,Sadness,0.08340326235950617
