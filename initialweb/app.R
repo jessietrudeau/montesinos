@@ -218,16 +218,16 @@ server <- function(input, output, session) {
   # Step 6: Define Colors
   # -----------------------------
   type_colors <- c(
-    "Illicit"          = "#e41a1c",
-    "Security"         = "#377eb8",
+    "Congress"         = "#BDB2FF",
+    "Security"         = "#A0C4FF",
+    "Bureaucrat"       = "#CAFFBF",
+    "Judiciary"        = "#FDFFB6",
+    "Foreign"          = "#FFD6A5",
+    "Media"            = "#FFADAD",
+    "Illicit"          = "#FFC6FF",
+    "Elected Official" = "#9BF6FF",
     "Businessperson"   = "#4daf4a",
-    "Bureaucrat"       = "#984ea3",
-    "Congress"         = "#ff7f00",
-    "Elected Official" = "#ffff33",
-    "Foreign"          = "#334499",
-    "Judiciary"        = "#f781bf",
-    "Media"            = "#66c2a5",
-    "Unknown"          = "#bdbdbd"
+    "Unknown"          = "grey"
   )
   
   # -----------------------------
