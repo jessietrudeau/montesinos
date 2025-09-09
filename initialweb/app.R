@@ -11,12 +11,12 @@ library(fs)
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
-      /* Fixed-width visNetwork tooltip with clean word wrapping */
-      .vis-tooltip {
-        width: 420px !important;
-        min-width: 420px !important;
-        max-width: 420px !important;
-        padding: 8px 10px;
+      #/* Fixed-width visNetwork tooltip with clean word wrapping */
+      #.vis-tooltip {
+      #  width: 420px !important;
+      #  min-width: 420px !important;
+      #  max-width: 420px !important;
+      #  padding: 8px 10px;
       }
       .vis-tooltip, .vis-tooltip * {
         white-space: normal !important;        /* wrap on spaces */
@@ -49,7 +49,7 @@ ui <- fluidPage(
 # SERVER
 # -----------------------------
 server <- function(input, output, session) {
-  
+
   # ---------- Local image mounting (no www/, image is in repo's images/ folder) ----------
   # We search common relative locations and mount whichever exists to the URL prefix "/images"
   candidates <- c("images", "../images", "../../images")
@@ -69,20 +69,20 @@ server <- function(input, output, session) {
     montesinos_image <- NULL  # will fall back to a dot if not found
     warning("montesinos.png not found under images/, ../images/, or ../../images/")
   }
-  
+
   # ---------- Helpers ----------
-  clean_desc <- function(x) {
+  #clean_desc <- function(x) {
     # Remove soft hyphen (U+00AD), zero-width space/joins (U+200B/C/D), word joiner (U+2060)
-    x <- stringr::str_replace_all(x, "[\\u00AD\\u200B\\u200C\\u200D\\u2060]", "")
-    x <- stringr::str_replace_all(x, "[ \t]+", " ")
-    stringr::str_squish(x)
-  }
-  wrap_html_fixed <- function(x) {
-    x <- ifelse(is.na(x) | trimws(x) == "", "No description", x)
-    x <- clean_desc(x)
-    stringr::str_replace_all(x, "\n+", "<br>")
-  }
-  
+   # x <- stringr::str_replace_all(x, "[\\u00AD\\u200B\\u200C\\u200D\\u2060]", "")
+    #x <- stringr::str_replace_all(x, "[ \t]+", " ")
+    #stringr::str_squish(x)
+  #}
+  #wrap_html_fixed <- function(x) {
+    #x <- ifelse(is.na(x) | trimws(x) == "", "No description", x)
+    #x <- clean_desc(x)
+   # stringr::str_replace_all(x, "\n+", "<br>")
+  #}
+
   # -----------------------------
   # Step 0: Speaker frequency across all transcripts
   # -----------------------------
@@ -91,7 +91,7 @@ server <- function(input, output, session) {
     regexp = "\\.(csv|tsv)$",
     recurse = TRUE
   )
-  
+
   speaker_freq_all <- map_dfr(transcript_files, function(path) {
     ext <- tools::file_ext(path)
     df <- if (ext == "csv") read_csv(path, col_types = cols()) else read_tsv(path, col_types = cols())
@@ -102,11 +102,11 @@ server <- function(input, output, session) {
       distinct(speaker_std) %>%
       mutate(n = transcript_id)
   })
-  
+
   speaker_frequency <- speaker_freq_all %>%
     distinct(speaker_std, n) %>%
     count(speaker_std, name = "conversation_count")
-  
+
   # -----------------------------
   # Step 1: Load Data
   # -----------------------------
@@ -114,7 +114,7 @@ server <- function(input, output, session) {
   speakers_df        <- read_csv("../data/Updated Inventory & Descriptions/speakers per transcript.csv")
   topic_descriptions <- read_csv("../data/Updated Inventory & Descriptions/Topic Descriptions.csv")
   actor_descriptions_raw <- read_csv("../data/Updated Inventory & Descriptions/Actors.csv")
-  
+
   actor_descriptions <- actor_descriptions_raw %>%
     mutate(
       Type = str_trim(Type),
@@ -134,7 +134,7 @@ server <- function(input, output, session) {
         actor_descriptions_raw$speaker_std
       )
     )
-  
+
   # -----------------------------
   # Step 2: Reshape Topics
   # -----------------------------
@@ -143,7 +143,7 @@ server <- function(input, output, session) {
     pivot_longer(cols = starts_with("topic_"), names_to = "topic", values_to = "included") %>%
     filter(included == "x") %>%
     mutate(n = as.character(n), topic = str_remove(topic, "^topic_"))
-  
+
   # -----------------------------
   # Step 3: Reshape Speakers
   # -----------------------------
@@ -151,7 +151,7 @@ server <- function(input, output, session) {
     pivot_longer(cols = -n, names_to = "speaker_col", values_to = "speaker") %>%
     filter(!is.na(speaker), speaker != "") %>%
     mutate(n = as.character(n), speaker = str_trim(speaker))
-  
+
   # -----------------------------
   # Step 4: Speaker ↔ Topic Edges
   # -----------------------------
@@ -165,7 +165,7 @@ server <- function(input, output, session) {
       to    = topic,
       width = pmax(1, log1p(coalesce(conversation_count, 0)))
     )
-  
+
   # -----------------------------
   # Step 4B: Faint Speaker–Speaker edges inside ST view (context only)
   # -----------------------------
@@ -179,7 +179,7 @@ server <- function(input, output, session) {
     mutate(from = map_chr(pairs, 1), to = map_chr(pairs, 2)) %>%
     select(from, to) %>%
     filter(from != to)
-  
+
   edges_placeholder <- speaker_pairs_topic_net %>%
     mutate(edge_id = paste(pmin(from, to), pmax(from, to), sep = "~~")) %>%
     distinct(edge_id, .keep_all = TRUE) %>%
@@ -190,7 +190,7 @@ server <- function(input, output, session) {
       color = "#bbbbbb",
       width = pmax(1, log1p(weight) / 2)
     )
-  
+
   # -----------------------------
   # Step 5: Speaker Co-Appearance Network (standalone)
   # -----------------------------
@@ -204,7 +204,7 @@ server <- function(input, output, session) {
     mutate(from = map_chr(pairs, 1), to = map_chr(pairs, 2)) %>%
     select(from, to) %>%
     filter(from != to)
-  
+
   edges_speaker_co <- speaker_pairs %>%
     mutate(from = str_to_lower(from), to = str_to_lower(to)) %>%
     mutate(edge_id = paste(pmin(from, to), pmax(from, to), sep = "~~")) %>%
@@ -213,7 +213,7 @@ server <- function(input, output, session) {
     group_by(from, to) %>%
     summarise(weight = n(), .groups = "drop") %>%
     mutate(width = pmax(1, log1p(weight)))
-  
+
   # -----------------------------
   # Step 6: Define Colors
   # -----------------------------
@@ -229,14 +229,14 @@ server <- function(input, output, session) {
     "Businessperson"   = "#4daf4a",
     "Unknown"          = "grey"
   )
-  
+
   # -----------------------------
   # Step 7: Build Nodes (Speakers & Topics)
   # -----------------------------
   nodes_speaker_base <- speaker_long %>%
     transmute(id = str_to_lower(str_trim(speaker))) %>%
     distinct()
-  
+
   nodes_speaker_st <- nodes_speaker_base %>%
     left_join(
       actor_descriptions %>%
@@ -267,7 +267,7 @@ server <- function(input, output, session) {
     ) %>%
     select(id, group, title, color, label) %>%
     distinct(id, .keep_all = TRUE)
-  
+
   # ---- Topic nodes with fixed-width, clean word-wrapped tooltips ----
   nodes_topic_st <- long_topics %>%
     transmute(id = topic) %>%
@@ -281,19 +281,16 @@ server <- function(input, output, session) {
     mutate(
       group = "Topic",
       label = "",
-      desc_html = wrap_html_fixed(description),
       title = paste0(
-        "<div class='tooltip-body' style='width:420px'>",
         "<b>", stringr::str_to_title(stringr::str_replace_all(id, "_", " ")), "</b><br>",
-        desc_html,
-        "</div>"
+        description
       ),
       value = 300,
       color = "maroon"
     ) %>%
     select(id, group, title, value, color, label) %>%
     distinct(id, .keep_all = TRUE)
-  
+
   # -----------------------------
   # Step 8: Compute true graph degree for speakers (for sizing)
   # -----------------------------
@@ -302,14 +299,14 @@ server <- function(input, output, session) {
     edges_speaker_co    %>% mutate(edge_type = "SS")
   ) %>%
     select(from, to, edge_type)
-  
+
   neighbors_df <- edges_all_for_degree %>%
     select(from, to) %>%
     bind_rows(edges_all_for_degree %>% transmute(from = to, to = from)) %>%
     distinct(from, to) %>%
     group_by(from) %>%
     summarise(degree = n_distinct(to), .groups = "drop")
-  
+
   nodes_speaker_st <- nodes_speaker_st %>%
     left_join(neighbors_df, by = c("id" = "from")) %>%
     mutate(degree = coalesce(degree, 1L)) %>%
@@ -322,7 +319,7 @@ server <- function(input, output, session) {
         mutate(., value = 40)
       }
     }
-  
+
   # ---- Swap MONTESINOS node to an image (served locally via /images) ----
   nodes_speaker_st <- nodes_speaker_st %>%
     mutate(
@@ -331,13 +328,13 @@ server <- function(input, output, session) {
       size  = if_else(id == "montesinos" & has_img, pmax(30, as.numeric(value)), NA_real_),
       borderWidth = if_else(id == "montesinos" & has_img, 0, NA_real_)
     )
-  
+
   # Merge all nodes (keep image-related columns)
   nodes_st <- bind_rows(
     nodes_speaker_st %>% select(id, group, title, color, label, value, shape, image, size, borderWidth),
     nodes_topic_st     %>% mutate(shape = "dot") %>% select(id, group, title, color, label, value, shape)
   ) %>% distinct(id, .keep_all = TRUE)
-  
+
   # -----------------------------
   # Step 9: Speaker-Topic Network (with faint SS edges)
   # -----------------------------
@@ -362,9 +359,11 @@ server <- function(input, output, session) {
       visLayout(randomSeed = 42) %>%
       visEvents(stabilizationIterationsDone = "function () {
         this.setOptions({ physics: false });
-      }")
+      }") %>%
+      visInteraction(tooltipStyle = 'position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;
+ font-family:sans;font-size:12px;font-color:black;background-color: white; word-break: normal;border: 1px solid #808074')
   })
-  
+
   # -----------------------------
   # Step 10: Co-Appearance Network (speakers only)
   # -----------------------------
@@ -386,9 +385,11 @@ server <- function(input, output, session) {
       visLayout(randomSeed = 42) %>%
       visEvents(stabilizationIterationsDone = "function () {
         this.setOptions({ physics: false });
-      }")
+      }") %>%
+    visInteraction(tooltipStyle = 'position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;
+ font-family:sans;font-size:12px;font-color:black;background-color: white; word-break: normal')
   })
-  
+
   # -----------------------------
   # Step 11: Legend
   # -----------------------------
